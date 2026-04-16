@@ -18,6 +18,13 @@ const variants: Record<ButtonVariant, string> = {
   ghost: "text-muted-foreground hover:bg-white/6 hover:text-foreground",
 };
 
+export function buttonVariants(variant: ButtonVariant = "primary") {
+  return cn(
+    "inline-flex h-11 items-center justify-center gap-2 rounded-full px-5 text-sm font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] disabled:pointer-events-none disabled:opacity-50",
+    variants[variant],
+  );
+}
+
 export function Button({
   className,
   variant = "primary",
@@ -30,11 +37,7 @@ export function Button({
   return (
     <button
       type={type}
-      className={cn(
-        "inline-flex h-11 items-center justify-center gap-2 rounded-full px-5 text-sm font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] disabled:pointer-events-none disabled:opacity-50",
-        variants[variant],
-        className,
-      )}
+      className={cn(buttonVariants(variant), className)}
       {...props}
     >
       {leftIcon}
