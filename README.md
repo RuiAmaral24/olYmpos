@@ -8,4 +8,4 @@ olYmpos is a full-stack platform for tracking, organizing, and reviewing anime, 
 - Supabase
 
 ## Status
-Currently in planning and design phase.
+Currently in coding phase.
