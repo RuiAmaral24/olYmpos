@@ -25,18 +25,18 @@ export function SectionTitle({
       )}
       {...props}
     >
-      <div className="space-y-2">
+      <div className="space-y-3">
         {eyebrow ? (
-          <p className="text-xs font-semibold uppercase tracking-[0.28em] text-accent-secondary">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-accent-secondary">
             {eyebrow}
           </p>
         ) : null}
-        <div className="space-y-1">
-          <h2 className="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
+        <div className="space-y-2">
+          <h2 className="text-[1.85rem] font-semibold tracking-[-0.03em] text-foreground sm:text-[2.15rem]">
             {title}
           </h2>
           {description ? (
-            <p className="max-w-2xl text-sm text-muted-foreground sm:text-base">
+            <p className="max-w-2xl text-sm leading-7 text-muted-foreground sm:text-base">
               {description}
             </p>
           ) : null}

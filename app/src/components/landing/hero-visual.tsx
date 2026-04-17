@@ -20,15 +20,16 @@ export function HeroVisual({ className }: HeroVisualProps) {
         alt="Zeus artwork for olYmpos hero"
         fill
         priority
-        className="object-cover object-[70%_center] scale-[1.035] [mask-image:linear-gradient(90deg,transparent_0%,black_16%,black_92%,transparent_100%),linear-gradient(180deg,transparent_0%,black_8%,black_88%,transparent_100%)] [-webkit-mask-image:linear-gradient(90deg,transparent_0%,black_16%,black_92%,transparent_100%),linear-gradient(180deg,transparent_0%,black_8%,black_88%,transparent_100%)]"
+        className="object-cover object-[68%_center] scale-[1.04] saturate-[1.02] [mask-image:linear-gradient(90deg,transparent_0%,black_15%,black_92%,transparent_100%),linear-gradient(180deg,transparent_0%,black_8%,black_88%,transparent_100%)] [-webkit-mask-image:linear-gradient(90deg,transparent_0%,black_15%,black_92%,transparent_100%),linear-gradient(180deg,transparent_0%,black_8%,black_88%,transparent_100%)]"
       />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_44%_30%,rgba(168,85,247,0.14),transparent_22%),radial-gradient(circle_at_78%_24%,rgba(78,161,255,0.08),transparent_22%)]" />
       <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(7,11,20,1)_0%,rgba(7,11,20,0.96)_17%,rgba(7,11,20,0.62)_38%,rgba(7,11,20,0.14)_64%,rgba(7,11,20,0.2)_100%)]" />
       <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(7,11,20,0.16),rgba(7,11,20,0.24)_38%,rgba(7,11,20,0.94)_100%)]" />
-      <div className="absolute inset-y-0 left-0 w-[45%] bg-[linear-gradient(90deg,rgba(7,11,20,1),rgba(7,11,20,0.97)_28%,rgba(7,11,20,0.64)_56%,transparent)]" />
+      <div className="absolute inset-y-0 left-0 w-[48%] bg-[linear-gradient(90deg,rgba(7,11,20,1),rgba(7,11,20,0.97)_28%,rgba(7,11,20,0.64)_56%,transparent)]" />
       <div className="absolute inset-y-0 right-0 w-[12%] bg-[linear-gradient(270deg,rgba(7,11,20,0.34),transparent)]" />
       <div className="absolute inset-x-0 top-0 h-32 bg-[linear-gradient(180deg,rgba(7,11,20,0.34),transparent)]" />
       <div className="absolute inset-x-0 bottom-0 h-32 bg-[linear-gradient(180deg,transparent,rgba(7,11,20,0.98))]" />
+      <div className="absolute right-[12%] top-[12%] hidden h-40 w-40 rounded-full border border-white/6 bg-[radial-gradient(circle,rgba(255,255,255,0.08),transparent_66%)] blur-2xl lg:block" />
     </div>
   );
 }
