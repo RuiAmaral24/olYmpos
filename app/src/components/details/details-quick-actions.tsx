@@ -2,8 +2,20 @@ import { CheckCircle2, Heart, SquarePen } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import {
+  markLibraryItemCompleted,
+  toggleLibraryItemFavorite,
+} from "@/lib/supabase/actions";
+import type { DetailedLibraryItem } from "@/types";
 
-export function DetailsQuickActions() {
+type DetailsQuickActionsProps = {
+  item: DetailedLibraryItem;
+};
+
+export function DetailsQuickActions({ item }: DetailsQuickActionsProps) {
+  const favoriteAction = toggleLibraryItemFavorite.bind(null, item.id, !item.isFavorite);
+  const completedAction = markLibraryItemCompleted.bind(null, item.id);
+
   return (
     <Card className="space-y-5 border border-white/8 bg-[linear-gradient(180deg,rgba(18,27,43,0.92),rgba(10,14,24,0.98))]">
       <div className="space-y-2">
@@ -15,14 +27,28 @@ export function DetailsQuickActions() {
         </h2>
       </div>
       <div className="grid gap-3 sm:grid-cols-3">
-        <Button variant="secondary" className="h-12 rounded-2xl px-5" leftIcon={<CheckCircle2 className="h-4 w-4" />}>
-          Mark as Completed
-        </Button>
-        <Button variant="secondary" className="h-12 rounded-2xl px-5" leftIcon={<Heart className="h-4 w-4" />}>
-          Add to Favorites
-        </Button>
+        <form action={completedAction}>
+          <Button
+            type="submit"
+            variant="secondary"
+            className="h-12 w-full rounded-2xl px-5"
+            leftIcon={<CheckCircle2 className="h-4 w-4" />}
+          >
+            Mark as Completed
+          </Button>
+        </form>
+        <form action={favoriteAction}>
+          <Button
+            type="submit"
+            variant="secondary"
+            className="h-12 w-full rounded-2xl px-5"
+            leftIcon={<Heart className="h-4 w-4" />}
+          >
+            {item.isFavorite ? "Remove Favorite" : "Add to Favorites"}
+          </Button>
+        </form>
         <Button variant="secondary" className="h-12 rounded-2xl px-5" leftIcon={<SquarePen className="h-4 w-4" />}>
-          Edit Review
+          Edit in Library
         </Button>
       </div>
     </Card>

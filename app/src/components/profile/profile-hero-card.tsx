@@ -23,7 +23,7 @@ export function ProfileHeroCard({
       <div className="relative flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
         <div className="flex flex-col gap-5 sm:flex-row sm:items-center">
           <div className="flex h-24 w-24 items-center justify-center rounded-[2rem] border border-white/10 bg-[linear-gradient(135deg,rgba(124,108,255,0.34),rgba(78,161,255,0.2))] text-3xl font-semibold tracking-[-0.05em] text-white shadow-[0_18px_40px_rgba(78,161,255,0.16)]">
-            OR
+            {getInitials(username)}
           </div>
 
             <div className="space-y-4">
@@ -67,4 +67,15 @@ export function ProfileHeroCard({
       </div>
     </Card>
   );
+}
+
+function getInitials(name: string) {
+  const initials = name
+    .split(/[\s._-]+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase())
+    .join("");
+
+  return initials || "OY";
 }

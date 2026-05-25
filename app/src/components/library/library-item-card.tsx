@@ -11,9 +11,14 @@ import type { LibraryItem } from "@/types";
 type LibraryItemCardProps = {
   item: LibraryItem;
   onEdit?: () => void;
+  onToggleFavorite?: () => void;
 };
 
-export function LibraryItemCard({ item, onEdit }: LibraryItemCardProps) {
+export function LibraryItemCard({
+  item,
+  onEdit,
+  onToggleFavorite,
+}: LibraryItemCardProps) {
   const progressLabel = getProgressLabel(item);
 
   return (
@@ -81,6 +86,20 @@ export function LibraryItemCard({ item, onEdit }: LibraryItemCardProps) {
           onClick={onEdit}
         >
           <Pencil className="h-4 w-4" />
+        </button>
+      ) : null}
+
+      {onToggleFavorite ? (
+        <button
+          type="button"
+          aria-label={`${item.isFavorite ? "Remove" : "Add"} ${item.title} favorite`}
+          className={cn(
+            "absolute right-16 top-4 z-10 inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/12 bg-[rgba(7,11,20,0.72)] backdrop-blur transition hover:text-[#f8cadb]",
+            item.isFavorite ? "text-[#f3b7cb]" : "text-[#dce4f3]",
+          )}
+          onClick={onToggleFavorite}
+        >
+          <Heart className={cn("h-4 w-4", item.isFavorite ? "fill-current" : "")} />
         </button>
       ) : null}
     </div>

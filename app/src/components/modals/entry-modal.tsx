@@ -4,6 +4,7 @@ import { useState } from "react";
 
 import { EntryForm } from "@/components/modals/entry-form";
 import { ModalShell } from "@/components/modals/modal-shell";
+import { itemToEntryFormValues } from "@/lib/library-mapper";
 import type { EntryFormValues, EntryModalMode, LibraryItem } from "@/types";
 
 type EntryModalProps = {
@@ -12,6 +13,8 @@ type EntryModalProps = {
   item?: LibraryItem | null;
   onClose: () => void;
   onSave: (values: EntryFormValues) => void;
+  onDelete?: () => void;
+  saving?: boolean;
 };
 
 const defaultValues: EntryFormValues = {
@@ -35,6 +38,8 @@ export function EntryModal({
   item,
   onClose,
   onSave,
+  onDelete,
+  saving = false,
 }: EntryModalProps) {
   const formKey = `${mode}-${item?.id ?? "new"}`;
 
@@ -55,6 +60,8 @@ export function EntryModal({
         initialValues={getInitialValues(item, mode)}
         onCancel={onClose}
         onSave={onSave}
+        onDelete={onDelete}
+        saving={saving}
       />
     </ModalShell>
   );
@@ -65,6 +72,8 @@ type EntryModalContentProps = {
   initialValues: EntryFormValues;
   onCancel: () => void;
   onSave: (values: EntryFormValues) => void;
+  onDelete?: () => void;
+  saving: boolean;
 };
 
 function EntryModalContent({
@@ -72,6 +81,8 @@ function EntryModalContent({
   initialValues,
   onCancel,
   onSave,
+  onDelete,
+  saving,
 }: EntryModalContentProps) {
   const [values, setValues] = useState<EntryFormValues>(initialValues);
 
@@ -92,6 +103,8 @@ function EntryModalContent({
       onChange={handleChange}
       onCancel={onCancel}
       onSubmit={() => onSave(values)}
+      onDelete={onDelete}
+      saving={saving}
     />
   );
 }
@@ -104,23 +117,5 @@ function getInitialValues(
     return defaultValues;
   }
 
-  return {
-    title: item.title,
-    category: item.category,
-    status: item.status,
-    rating: item.rating,
-    favorite: item.isFavorite,
-    season: item.category === "anime" ? String(item.progress.currentSeason) : "",
-    episode: item.category === "anime" ? String(item.progress.currentEpisode) : "",
-    movieState:
-      item.category === "movie" && item.progress.reviewDrafted
-        ? "review_ready"
-        : item.category === "movie" && item.progress.completed
-          ? "completed"
-          : "watched",
-    chapter: item.category === "game" ? item.progress.chapter ?? "" : "",
-    runLabel: item.category === "game" ? item.progress.runLabel ?? "" : "",
-    hoursPlayed: item.category === "game" ? String(item.progress.hoursPlayed) : "",
-    notes: "",
-  };
+  return itemToEntryFormValues(item);
 }

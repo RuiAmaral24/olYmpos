@@ -5,8 +5,18 @@ import { AuthShell } from "@/components/auth/auth-shell";
 import { AuthSideContent } from "@/components/auth/auth-side-content";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { login } from "@/lib/supabase/auth";
 
-export default function LoginPage() {
+type LoginPageProps = {
+  searchParams: Promise<{
+    error?: string;
+    message?: string;
+  }>;
+};
+
+export default async function LoginPage({ searchParams }: LoginPageProps) {
+  const { error, message } = await searchParams;
+
   return (
     <div className="flex w-full items-center">
       <AuthShell
@@ -40,18 +50,40 @@ export default function LoginPage() {
             </p>
           )}
         >
-          <form className="space-y-5">
+          <form action={login} className="space-y-5">
+            {error ? (
+              <p className="rounded-2xl border border-red-400/20 bg-red-500/10 px-4 py-3 text-sm text-red-100">
+                {error}
+              </p>
+            ) : null}
+            {message ? (
+              <p className="rounded-2xl border border-emerald-300/20 bg-emerald-400/10 px-4 py-3 text-sm text-emerald-100">
+                {message}
+              </p>
+            ) : null}
             <div className="space-y-2">
               <label htmlFor="email" className="text-sm font-medium text-[#d9e2f2]">
                 Email
               </label>
-              <Input id="email" type="email" placeholder="you@example.com" />
+              <Input
+                id="email"
+                name="email"
+                type="email"
+                placeholder="you@example.com"
+                required
+              />
             </div>
             <div className="space-y-2">
               <label htmlFor="password" className="text-sm font-medium text-[#d9e2f2]">
                 Password
               </label>
-              <Input id="password" type="password" placeholder="Enter your password" />
+              <Input
+                id="password"
+                name="password"
+                type="password"
+                placeholder="Enter your password"
+                required
+              />
             </div>
             <div className="flex flex-col gap-3 text-sm text-[#aeb8cf] sm:flex-row sm:items-center sm:justify-between">
               <label className="flex items-center gap-3">

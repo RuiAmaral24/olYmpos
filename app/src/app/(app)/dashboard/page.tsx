@@ -9,17 +9,25 @@ import { DashboardSummaryCard } from "@/components/dashboard/dashboard-summary-c
 import { Card } from "@/components/ui/card";
 import { SectionTitle } from "@/components/ui/section-title";
 import {
-  dashboardContinueItems,
-  dashboardRecentReviews,
-  mockLibraryItems,
-} from "@/data/mock-library";
+  toDashboardReview,
+  toDashboardTrackedItem,
+} from "@/lib/library-mapper";
 import { getCategoryCounts, getCategoryLabel } from "@/lib/library";
+import { getUserLibraryItems } from "@/lib/supabase/library";
 
-const trackedCounts = getCategoryCounts(mockLibraryItems);
+export default async function DashboardPage() {
+  const libraryItems = await getUserLibraryItems();
+  const trackedCounts = getCategoryCounts(libraryItems);
+  const dashboardContinueItems = libraryItems
+    .filter((item) => item.status === "watching" || item.status === "playing")
+    .slice(0, 3)
+    .map(toDashboardTrackedItem);
+  const dashboardRecentReviews = libraryItems
+    .map(toDashboardReview)
+    .filter((review): review is NonNullable<typeof review> => Boolean(review))
+    .slice(0, 3);
+  const favoriteItems = libraryItems.filter((item) => item.isFavorite).slice(0, 3);
 
-const favoriteItems = dashboardContinueItems.filter((item) => item.favorite);
-
-export default function DashboardPage() {
   return (
     <div className="space-y-8 pb-8">
       <DashboardHero />
@@ -49,9 +57,15 @@ export default function DashboardPage() {
           description="Three titles waiting for your next session."
         />
         <div className="grid gap-4 xl:grid-cols-3">
-          {dashboardContinueItems.map((item) => (
-            <DashboardMediaCard key={item.id} item={item} />
-          ))}
+          {dashboardContinueItems.length > 0 ? (
+            dashboardContinueItems.map((item) => (
+              <DashboardMediaCard key={item.id} item={item} />
+            ))
+          ) : (
+            <Card className="border border-white/8 bg-white/4 text-sm leading-6 text-[#aeb8cf] xl:col-span-3">
+              Add active anime, movies, or games to see your real progress here.
+            </Card>
+          )}
         </div>
       </section>
 
@@ -63,7 +77,7 @@ export default function DashboardPage() {
             description="The titles currently defining your olYmpos."
           />
           <div className="grid gap-4">
-            {favoriteItems.map((item) => (
+            {favoriteItems.length > 0 ? favoriteItems.map((item) => (
               <Card
                 key={item.id}
                 className="border border-white/8 bg-[linear-gradient(180deg,rgba(21,30,47,0.92),rgba(10,15,26,0.96))]"
@@ -81,7 +95,11 @@ export default function DashboardPage() {
                   </div>
                 </div>
               </Card>
-            ))}
+            )) : (
+              <Card className="border border-white/8 bg-white/4 text-sm leading-6 text-[#aeb8cf]">
+                Favorite titles from your library will collect here.
+              </Card>
+            )}
           </div>
         </section>
 
@@ -92,9 +110,15 @@ export default function DashboardPage() {
             description="Your latest thoughts, scores, and standout moments."
           />
           <div className="grid gap-4">
-            {dashboardRecentReviews.map((review) => (
-              <DashboardReviewCard key={review.id} review={review} />
-            ))}
+            {dashboardRecentReviews.length > 0 ? (
+              dashboardRecentReviews.map((review) => (
+                <DashboardReviewCard key={review.id} review={review} />
+              ))
+            ) : (
+              <Card className="border border-white/8 bg-white/4 text-sm leading-6 text-[#aeb8cf]">
+                Add review notes while editing an entry to surface them here.
+              </Card>
+            )}
           </div>
         </section>
       </div>

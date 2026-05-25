@@ -2,15 +2,26 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import type { User } from "@supabase/supabase-js";
 import { Bell, Search, Settings } from "lucide-react";
 
 import { BrandLockup } from "@/components/ui/brand-lockup";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { logout } from "@/lib/supabase/auth";
 
-export function AppHeader() {
+type AppHeaderProps = {
+  user: User;
+};
+
+export function AppHeader({ user }: AppHeaderProps) {
   const pathname = usePathname();
   const pageMeta = getPageMeta(pathname);
+  const displayName =
+    typeof user.user_metadata?.username === "string"
+      ? user.user_metadata.username
+      : user.email?.split("@")[0] ?? "olYmpos";
+  const initials = getInitials(displayName);
 
   return (
     <header className="premium-panel relative z-20 rounded-[30px] px-4 py-4 sm:px-6">
@@ -60,17 +71,30 @@ export function AppHeader() {
           <Link
             href="/profile"
             className="hidden h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-white/8 text-sm font-semibold text-foreground transition hover:border-white/16 hover:bg-white/10 sm:flex"
+            aria-label={displayName}
+            title={displayName}
           >
-            OR
+            {initials}
           </Link>
 
-          <Button variant="secondary" className="h-10 px-4">
-            Sign Out
-          </Button>
+          <form action={logout}>
+            <Button type="submit" variant="secondary" className="h-10 px-4">
+              Sign Out
+            </Button>
+          </form>
         </div>
       </div>
     </header>
   );
+}
+
+function getInitials(name: string) {
+  return name
+    .split(/[\s._-]+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase())
+    .join("");
 }
 
 type HeaderIconProps = {

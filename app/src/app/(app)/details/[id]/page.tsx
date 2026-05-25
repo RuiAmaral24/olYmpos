@@ -8,8 +8,9 @@ import { DetailsRelatedCard } from "@/components/details/details-related-card";
 import { DetailsReviewCard } from "@/components/details/details-review-card";
 import { DetailsTrackingCard } from "@/components/details/details-tracking-card";
 import { SectionTitle } from "@/components/ui/section-title";
-import { getDetailedLibraryItem, mockLibraryItems } from "@/data/mock-library";
+import { mapDetailedItem } from "@/lib/library-mapper";
 import { getCategoryLabel, getDisplayMetadata } from "@/lib/library";
+import { getUserLibraryItem } from "@/lib/supabase/library";
 
 type DetailsPageProps = {
   params: Promise<{
@@ -19,14 +20,15 @@ type DetailsPageProps = {
 
 export default async function DetailsPage({ params }: DetailsPageProps) {
   const { id } = await params;
-  const item = getDetailedLibraryItem(id);
+  const { item: libraryItem, items } = await getUserLibraryItem(id);
 
-  if (!item) {
+  if (!libraryItem) {
     notFound();
   }
 
+  const item = mapDetailedItem(libraryItem, items);
   const relatedItems = item.relatedIds
-    .map((relatedId) => mockLibraryItems.find((entry) => entry.id === relatedId))
+    .map((relatedId) => items.find((entry) => entry.id === relatedId))
     .filter((entry): entry is NonNullable<typeof entry> => Boolean(entry));
 
   return (
@@ -36,7 +38,7 @@ export default async function DetailsPage({ params }: DetailsPageProps) {
       <DetailsHeroCard item={item} />
 
       <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_360px]">
-        <DetailsTrackingCard item={item} />
+      <DetailsTrackingCard item={item} />
         <DetailsMetadataCard metadata={getDisplayMetadata(item)} />
       </div>
 
@@ -55,7 +57,7 @@ export default async function DetailsPage({ params }: DetailsPageProps) {
         </div>
       </section>
 
-      <DetailsQuickActions />
+      <DetailsQuickActions item={item} />
     </div>
   );
 }

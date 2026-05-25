@@ -30,6 +30,8 @@ type EntryFormProps = {
   onChange: <K extends keyof EntryFormValues>(field: K, value: EntryFormValues[K]) => void;
   onCancel: () => void;
   onSubmit: () => void;
+  onDelete?: () => void;
+  saving?: boolean;
 };
 
 export function EntryForm({
@@ -38,6 +40,8 @@ export function EntryForm({
   onChange,
   onCancel,
   onSubmit,
+  onDelete,
+  saving = false,
 }: EntryFormProps) {
   return (
     <div className="grid gap-6 lg:grid-cols-[minmax(0,1.3fr)_320px]">
@@ -211,10 +215,20 @@ export function EntryForm({
             Actions
           </p>
           <div className="grid gap-3">
-            <Button variant="secondary" className="h-12 rounded-2xl" onClick={onCancel}>
+            {onDelete ? (
+              <Button
+                variant="secondary"
+                className="h-12 rounded-2xl border-red-300/20 text-red-100 hover:bg-red-500/10"
+                onClick={onDelete}
+                disabled={saving}
+              >
+                Delete Entry
+              </Button>
+            ) : null}
+            <Button variant="secondary" className="h-12 rounded-2xl" onClick={onCancel} disabled={saving}>
               Cancel
             </Button>
-            <Button className="h-12 rounded-2xl" onClick={onSubmit}>
+            <Button className="h-12 rounded-2xl" onClick={onSubmit} disabled={saving}>
               {mode === "add" ? "Add Entry" : "Save Changes"}
             </Button>
           </div>

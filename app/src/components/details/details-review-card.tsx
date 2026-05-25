@@ -1,7 +1,7 @@
 import { Card } from "@/components/ui/card";
 
 type DetailsReviewCardProps = {
-  review: string;
+  review: string | null;
 };
 
 export function DetailsReviewCard({ review }: DetailsReviewCardProps) {
@@ -16,7 +16,7 @@ export function DetailsReviewCard({ review }: DetailsReviewCardProps) {
         </h2>
       </div>
       <p className="max-w-3xl text-sm leading-7 text-[#afbad1] sm:text-base">
-        {review}
+        {review ?? "No personal review yet. Add notes from the library edit flow to keep this title's record current."}
       </p>
     </Card>
   );

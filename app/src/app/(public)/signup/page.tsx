@@ -5,8 +5,17 @@ import { AuthShell } from "@/components/auth/auth-shell";
 import { AuthSideContent } from "@/components/auth/auth-side-content";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { signup } from "@/lib/supabase/auth";
 
-export default function SignupPage() {
+type SignupPageProps = {
+  searchParams: Promise<{
+    error?: string;
+  }>;
+};
+
+export default async function SignupPage({ searchParams }: SignupPageProps) {
+  const { error } = await searchParams;
+
   return (
     <div className="flex w-full items-center">
       <AuthShell
@@ -40,24 +49,46 @@ export default function SignupPage() {
             </p>
           )}
         >
-          <form className="space-y-5">
+          <form action={signup} className="space-y-5">
+            {error ? (
+              <p className="rounded-2xl border border-red-400/20 bg-red-500/10 px-4 py-3 text-sm text-red-100">
+                {error}
+              </p>
+            ) : null}
             <div className="space-y-2">
               <label htmlFor="username" className="text-sm font-medium text-[#d9e2f2]">
                 Username
               </label>
-              <Input id="username" placeholder="Choose a username" />
+              <Input
+                id="username"
+                name="username"
+                placeholder="Choose a username"
+                required
+              />
             </div>
             <div className="space-y-2">
               <label htmlFor="email" className="text-sm font-medium text-[#d9e2f2]">
                 Email
               </label>
-              <Input id="email" type="email" placeholder="you@example.com" />
+              <Input
+                id="email"
+                name="email"
+                type="email"
+                placeholder="you@example.com"
+                required
+              />
             </div>
             <div className="space-y-2">
               <label htmlFor="password" className="text-sm font-medium text-[#d9e2f2]">
                 Password
               </label>
-              <Input id="password" type="password" placeholder="Create a password" />
+              <Input
+                id="password"
+                name="password"
+                type="password"
+                placeholder="Create a password"
+                required
+              />
             </div>
             <div className="space-y-2">
               <label
@@ -68,8 +99,10 @@ export default function SignupPage() {
               </label>
               <Input
                 id="confirm-password"
+                name="confirm-password"
                 type="password"
                 placeholder="Repeat your password"
+                required
               />
             </div>
             <Button type="submit" className="h-12 w-full rounded-2xl text-sm font-semibold">

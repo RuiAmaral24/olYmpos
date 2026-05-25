@@ -3,6 +3,7 @@ import { RefreshCcw, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { getProgressPercent, getStatusLabel, getTrackingDetails } from "@/lib/library";
+import { markLibraryItemCompleted } from "@/lib/supabase/actions";
 import type { DetailedLibraryItem } from "@/types";
 
 type DetailsTrackingCardProps = {
@@ -11,6 +12,7 @@ type DetailsTrackingCardProps = {
 
 export function DetailsTrackingCard({ item }: DetailsTrackingCardProps) {
   const progressPercent = getProgressPercent(item);
+  const completedAction = markLibraryItemCompleted.bind(null, item.id);
 
   return (
     <Card className="space-y-6 border border-white/8 bg-[linear-gradient(180deg,rgba(19,28,44,0.92),rgba(9,14,24,0.98))]">
@@ -54,9 +56,16 @@ export function DetailsTrackingCard({ item }: DetailsTrackingCardProps) {
         </div>
       </div>
 
-      <Button variant="secondary" className="h-12 rounded-2xl px-5 sm:w-fit" leftIcon={<RefreshCcw className="h-4 w-4" />}>
-        Update Progress
-      </Button>
+      <form action={completedAction}>
+        <Button
+          type="submit"
+          variant="secondary"
+          className="h-12 rounded-2xl px-5 sm:w-fit"
+          leftIcon={<RefreshCcw className="h-4 w-4" />}
+        >
+          Update Progress
+        </Button>
+      </form>
     </Card>
   );
 }

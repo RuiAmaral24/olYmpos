@@ -9,19 +9,25 @@ import { ProfileProgressRow } from "@/components/profile/profile-progress-row";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { SectionTitle } from "@/components/ui/section-title";
-import {
-  dashboardContinueItems,
-  dashboardRecentReviews,
-  mockLibraryItems,
-} from "@/data/mock-library";
+import { toDashboardReview } from "@/lib/library-mapper";
 import { getCategoryCounts, getDashboardSummary, getFavoriteItems, getProgressLabel } from "@/lib/library";
+import { getUserLibraryItems, getUserProfile } from "@/lib/supabase/library";
 
-const trackedCounts = getCategoryCounts(mockLibraryItems);
-const favoriteItems = getFavoriteItems(mockLibraryItems).slice(0, 4);
-const recentActivity = mockLibraryItems.filter((item) => getProgressLabel(item)).slice(0, 4);
-const activitySummary = getDashboardSummary(mockLibraryItems);
+export default async function ProfilePage() {
+  const [profile, libraryItems] = await Promise.all([
+    getUserProfile(),
+    getUserLibraryItems(),
+  ]);
+  const trackedCounts = getCategoryCounts(libraryItems);
+  const favoriteItems = getFavoriteItems(libraryItems).slice(0, 4);
+  const recentActivity = libraryItems.filter((item) => getProgressLabel(item)).slice(0, 4);
+  const activitySummary = getDashboardSummary(libraryItems);
+  const recentReviews = libraryItems
+    .map(toDashboardReview)
+    .filter((review): review is NonNullable<typeof review> => Boolean(review))
+    .slice(0, 3);
+  const username = profile?.username ?? "olYmpos user";
 
-export default function ProfilePage() {
   return (
     <div className="space-y-8 pb-8">
       <SectionTitle
@@ -37,10 +43,10 @@ export default function ProfilePage() {
       />
 
       <ProfileHeroCard
-        username="Orion Vale"
+        username={username}
         isPublic
-        bio="Building a personal olYmpos around contemplative anime, bold sci-fi cinema, and long-form RPG runs that actually deserve the hours."
-        interests={["Anime Fan", "Sci-Fi Lover", "RPG Gamer"]}
+        bio={profile?.bio ?? "Building a personal olYmpos across anime, movies, and games."}
+        interests={buildInterests(trackedCounts)}
       />
 
       <section className="grid gap-4 md:grid-cols-3">
@@ -69,9 +75,15 @@ export default function ProfilePage() {
             description="The titles that best represent your taste inside olYmpos."
           />
           <div className="grid gap-4 sm:grid-cols-2">
-            {favoriteItems.map((item) => (
-              <ProfileFavoriteCard key={item.id} item={item} />
-            ))}
+            {favoriteItems.length > 0 ? (
+              favoriteItems.map((item) => (
+                <ProfileFavoriteCard key={item.id} item={item} />
+              ))
+            ) : (
+              <Card className="border border-white/8 bg-white/4 text-sm leading-6 text-[#aeb8cf] sm:col-span-2">
+                Favorite titles from your library will appear here.
+              </Card>
+            )}
           </div>
         </section>
 
@@ -82,9 +94,15 @@ export default function ProfilePage() {
             description="Recent impressions published from your library."
           />
           <div className="grid gap-4">
-            {dashboardRecentReviews.map((review) => (
-              <DashboardReviewCard key={review.id} review={review} />
-            ))}
+            {recentReviews.length > 0 ? (
+              recentReviews.map((review) => (
+                <DashboardReviewCard key={review.id} review={review} />
+              ))
+            ) : (
+              <Card className="border border-white/8 bg-white/4 text-sm leading-6 text-[#aeb8cf]">
+                Your review notes will appear here once you add them to entries.
+              </Card>
+            )}
           </div>
         </section>
       </div>
@@ -97,9 +115,15 @@ export default function ProfilePage() {
             description="A quick look at what is moving right now in your universe."
           />
           <div className="grid gap-4">
-            {recentActivity.map((item) => (
-              <ProfileActivityRow key={item.id} item={item} />
-            ))}
+            {recentActivity.length > 0 ? (
+              recentActivity.map((item) => (
+                <ProfileActivityRow key={item.id} item={item} />
+              ))
+            ) : (
+              <Card className="border border-white/8 bg-white/4 text-sm leading-6 text-[#aeb8cf]">
+                Track progress on an entry to build your activity feed.
+              </Card>
+            )}
           </div>
           <Card className="border border-white/8 bg-[linear-gradient(135deg,rgba(18,26,42,0.88),rgba(9,14,24,0.96))]">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -112,7 +136,7 @@ export default function ProfilePage() {
                 </h3>
               </div>
               <p className="text-sm text-[#aeb8cf]">
-                {dashboardContinueItems.length} active highlights across anime, movies, and games.
+                {activitySummary.activeItems} active highlights across anime, movies, and games.
               </p>
             </div>
           </Card>
@@ -148,4 +172,22 @@ export default function ProfilePage() {
       </div>
     </div>
   );
+}
+
+function buildInterests(counts: ReturnType<typeof getCategoryCounts>) {
+  const interests = [];
+
+  if (counts.anime > 0) {
+    interests.push("Anime Fan");
+  }
+
+  if (counts.movie > 0) {
+    interests.push("Movie Curator");
+  }
+
+  if (counts.game > 0) {
+    interests.push("Game Tracker");
+  }
+
+  return interests.length > 0 ? interests : ["New to olYmpos"];
 }
