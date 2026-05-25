@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { Card } from "@/components/ui/card";
+import { getCategoryLabel, getStatusLabel } from "@/lib/library";
 import type { LibraryItem } from "@/types";
 
 type DetailsRelatedCardProps = {
@@ -14,10 +15,10 @@ export function DetailsRelatedCard({ item }: DetailsRelatedCardProps) {
         <div className={`h-36 bg-gradient-to-br ${item.coverAccent}`} />
         <div className="space-y-2 p-5">
           <p className="text-xs uppercase tracking-[0.26em] text-accent-secondary">
-            {item.category}
+            {getCategoryLabel(item.category)}
           </p>
           <h3 className="text-lg font-semibold text-white">{item.title}</h3>
-          <p className="text-sm text-[#aeb8cf]">{item.status}</p>
+          <p className="text-sm text-[#aeb8cf]">{getStatusLabel(item.status)}</p>
         </div>
       </Card>
     </Link>

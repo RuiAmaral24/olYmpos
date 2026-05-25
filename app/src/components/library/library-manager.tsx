@@ -40,32 +40,17 @@ export function LibraryManager({ initialItems }: LibraryManagerProps) {
 
   const handleSave = (values: EntryFormValues) => {
     if (modalMode === "add") {
-      const nextItem: LibraryItem = {
-        id: String(Date.now()),
-        title: values.title || "Untitled Entry",
-        category: values.category,
-        status: values.status,
-        rating: values.rating,
-        favorite: values.favorite,
-        progressLabel: buildProgressLabel(values),
-        coverAccent: coverAccents[items.length % coverAccents.length],
-        year: "2025",
-      };
+      const nextItem = buildLibraryItemFromForm(
+        values,
+        coverAccents[items.length % coverAccents.length],
+      );
 
       setItems((current) => [nextItem, ...current]);
     } else if (selectedItem) {
       setItems((current) =>
         current.map((item) =>
           item.id === selectedItem.id
-            ? {
-                ...item,
-                title: values.title,
-                category: values.category,
-                status: values.status,
-                rating: values.rating,
-                favorite: values.favorite,
-                progressLabel: buildProgressLabel(values),
-              }
+            ? buildLibraryItemFromForm(values, item.coverAccent, item)
             : item,
         ),
       );
@@ -122,22 +107,92 @@ export function LibraryManager({ initialItems }: LibraryManagerProps) {
   );
 }
 
-function buildProgressLabel(values: EntryFormValues) {
-  if (values.category === "Anime") {
-    return values.season || values.episode
-      ? `Season ${values.season || "1"} | Episode ${values.episode || "1"}`
-      : undefined;
+function buildLibraryItemFromForm(
+  values: EntryFormValues,
+  coverAccent: string,
+  existingItem?: LibraryItem,
+): LibraryItem {
+  const now = new Date().toISOString();
+  const base = {
+    id: existingItem?.id ?? String(Date.now()),
+    userId: existingItem?.userId ?? "profile-orion-vale",
+    title: values.title || "Untitled Entry",
+    status: values.status,
+    rating: values.rating,
+    isFavorite: values.favorite,
+    coverUrl: existingItem?.coverUrl ?? null,
+    coverAccent,
+    year: existingItem?.year ?? 2025,
+    description: existingItem?.description ?? "A new title tracked inside olYmpos.",
+    createdAt: existingItem?.createdAt ?? now,
+    updatedAt: now,
+    review: existingItem?.review ?? null,
+  };
+
+  if (values.category === "anime") {
+    const currentEpisode = Number(values.episode || 0);
+
+    return {
+      ...base,
+      category: "anime",
+      metadata: {
+        totalSeasons: Number(values.season || 1),
+        totalEpisodes: currentEpisode,
+        studio: "Unknown Studio",
+        releaseDate: String(base.year),
+      },
+      progress: {
+        category: "anime",
+        currentSeason: Number(values.season || 1),
+        currentEpisode,
+        totalEpisodes: currentEpisode,
+        percentComplete: currentEpisode > 0 ? 100 : 0,
+      },
+    };
   }
 
-  if (values.category === "Movie") {
-    return values.movieState;
+  if (values.category === "movie") {
+    const completed = values.movieState === "completed";
+    const watched = completed || values.movieState === "watched" || values.movieState === "review_ready";
+
+    return {
+      ...base,
+      category: "movie",
+      metadata: {
+        runtimeMinutes: 0,
+        director: "Unknown Director",
+        watchedCount: watched ? 1 : 0,
+        releaseDate: String(base.year),
+        format: "Feature Film",
+      },
+      progress: {
+        category: "movie",
+        watched,
+        reviewDrafted: values.movieState === "review_ready",
+        completed,
+        watchedCount: watched ? 1 : 0,
+        percentComplete: completed ? 100 : watched ? 75 : 0,
+      },
+    };
   }
 
-  const segments = [
-    values.chapter ? `Chapter ${values.chapter}` : "",
-    values.runLabel ? `Run ${values.runLabel}` : "",
-    values.hoursPlayed ? `${values.hoursPlayed}h` : "",
-  ].filter(Boolean);
-
-  return segments.join(" | ") || undefined;
+  return {
+    ...base,
+    category: "game",
+    metadata: {
+      platform: "Unknown Platform",
+      hoursPlayed: Number(values.hoursPlayed || 0),
+      chapter: values.chapter || null,
+      completionPercent: 0,
+      developer: "Unknown Developer",
+      releaseDate: String(base.year),
+    },
+    progress: {
+      category: "game",
+      chapter: values.chapter || null,
+      runLabel: values.runLabel || null,
+      hoursPlayed: Number(values.hoursPlayed || 0),
+      completionPercent: 0,
+    },
+  };
 }

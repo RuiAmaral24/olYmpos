@@ -1,6 +1,7 @@
 import { Heart } from "lucide-react";
 
 import { Card } from "@/components/ui/card";
+import { getCategoryLabel } from "@/lib/library";
 import type { LibraryItem } from "@/types";
 
 type ProfileFavoriteCardProps = {
@@ -13,7 +14,7 @@ export function ProfileFavoriteCard({ item }: ProfileFavoriteCardProps) {
       <div className="flex items-start justify-between gap-4">
         <div className="space-y-2">
           <p className="text-xs uppercase tracking-[0.28em] text-accent-secondary">
-            {item.category}
+            {getCategoryLabel(item.category)}
           </p>
           <h3 className="text-lg font-semibold text-white">{item.title}</h3>
         </div>

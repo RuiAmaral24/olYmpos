@@ -5,12 +5,24 @@ import { Heart, Sparkles, Star } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { getCategoryLabel, getStatusLabel } from "@/lib/library";
 import { cn } from "@/lib/utils";
-import type { EntryFormValues, EntryModalMode } from "@/types";
+import type { EntryFormValues, EntryModalMode, MediaCategory, TrackingStatus } from "@/types";
 
-const categoryOptions = ["Anime", "Movie", "Game"] as const;
-const statusOptions = ["Completed", "Watching", "Playing", "Planned"] as const;
-const movieStateOptions = ["Watched", "Review Ready", "Completed"] as const;
+const categoryOptions: MediaCategory[] = ["anime", "movie", "game"];
+const statusOptions: TrackingStatus[] = [
+  "completed",
+  "watching",
+  "playing",
+  "planned",
+  "paused",
+  "dropped",
+];
+const movieStateOptions = [
+  { value: "watched", label: "Watched" },
+  { value: "review_ready", label: "Review Ready" },
+  { value: "completed", label: "Completed" },
+] as const;
 
 type EntryFormProps = {
   mode: EntryModalMode;
@@ -43,6 +55,7 @@ export function EntryForm({
               value={values.category}
               onChange={(value) => onChange("category", value as EntryFormValues["category"])}
               options={categoryOptions}
+              getLabel={getCategoryLabel}
             />
           </Field>
           <Field label="Status">
@@ -50,6 +63,7 @@ export function EntryForm({
               value={values.status}
               onChange={(value) => onChange("status", value as EntryFormValues["status"])}
               options={statusOptions}
+              getLabel={getStatusLabel}
             />
           </Field>
           <Field label="Rating">
@@ -94,11 +108,11 @@ export function EntryForm({
               Progress Inputs
             </p>
             <h3 className="text-xl font-semibold text-white">
-              Tailored to your {values.category.toLowerCase()}
+              Tailored to your {getCategoryLabel(values.category).toLowerCase()}
             </h3>
           </div>
 
-          {values.category === "Anime" ? (
+          {values.category === "anime" ? (
             <div className="grid gap-5 sm:grid-cols-2">
               <Field label="Season">
                 <Input
@@ -117,17 +131,20 @@ export function EntryForm({
             </div>
           ) : null}
 
-          {values.category === "Movie" ? (
+          {values.category === "movie" ? (
             <Field label="Viewing State">
               <SelectField
                 value={values.movieState}
                 onChange={(value) => onChange("movieState", value as EntryFormValues["movieState"])}
-                options={movieStateOptions}
+                options={movieStateOptions.map((option) => option.value)}
+                getLabel={(value) =>
+                  movieStateOptions.find((option) => option.value === value)?.label ?? value
+                }
               />
             </Field>
           ) : null}
 
-          {values.category === "Game" ? (
+          {values.category === "game" ? (
             <div className="grid gap-5 sm:grid-cols-3">
               <Field label="Chapter">
                 <Input
@@ -181,7 +198,7 @@ export function EntryForm({
               {values.title || "Untitled entry"}
             </h3>
             <p className="mt-2 text-sm text-[#afbad1]">
-              {values.category} | {values.status}
+              {getCategoryLabel(values.category)} | {getStatusLabel(values.status)}
             </p>
             <p className="mt-4 text-sm leading-6 text-[#96a4bf]">
               {buildPreviewProgress(values)}
@@ -222,22 +239,28 @@ function Field({ label, children, className }: FieldProps) {
   );
 }
 
-type SelectFieldProps = {
-  value: string;
-  onChange: (value: string) => void;
-  options: readonly string[];
+type SelectFieldProps<TValue extends string> = {
+  value: TValue;
+  onChange: (value: TValue) => void;
+  options: readonly TValue[];
+  getLabel?: (value: TValue) => string;
 };
 
-function SelectField({ value, onChange, options }: SelectFieldProps) {
+function SelectField<TValue extends string>({
+  value,
+  onChange,
+  options,
+  getLabel,
+}: SelectFieldProps<TValue>) {
   return (
     <select
       value={value}
-      onChange={(event) => onChange(event.target.value)}
+      onChange={(event) => onChange(event.target.value as TValue)}
       className="h-11 w-full rounded-2xl border border-white/10 bg-white/6 px-4 text-sm text-foreground outline-none focus:border-white/20 focus:ring-2 focus:ring-[var(--ring)]"
     >
       {options.map((option) => (
         <option key={option} value={option} className="bg-surface text-foreground">
-          {option}
+          {getLabel?.(option) ?? option}
         </option>
       ))}
     </select>
@@ -245,14 +268,18 @@ function SelectField({ value, onChange, options }: SelectFieldProps) {
 }
 
 function buildPreviewProgress(values: EntryFormValues) {
-  if (values.category === "Anime") {
+  if (values.category === "anime") {
     return values.season || values.episode
       ? `Season ${values.season || "1"}, Episode ${values.episode || "1"}`
       : "Set season and episode progress for this anime entry.";
   }
 
-  if (values.category === "Movie") {
-    return `Viewing state: ${values.movieState}`;
+  if (values.category === "movie") {
+    const movieStateLabel =
+      movieStateOptions.find((option) => option.value === values.movieState)?.label ??
+      values.movieState;
+
+    return `Viewing state: ${movieStateLabel}`;
   }
 
   return values.chapter || values.runLabel || values.hoursPlayed

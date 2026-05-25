@@ -1,4 +1,5 @@
 import { Card } from "@/components/ui/card";
+import { getCategoryLabel } from "@/lib/library";
 import { cn } from "@/lib/utils";
 import type { DashboardTrackedItem } from "@/types";
 
@@ -15,7 +16,7 @@ export function DashboardMediaCard({ item }: DashboardMediaCardProps) {
       <div className="relative space-y-12 p-6">
         <div className="flex items-start justify-between gap-3">
           <p className="text-xs uppercase tracking-[0.28em] text-[#d3dcf0]">
-            {item.category}
+            {getCategoryLabel(item.category)}
           </p>
           <span className="rounded-full border border-white/12 bg-white/8 px-3 py-1 text-[11px] uppercase tracking-[0.22em] text-[#dfe6f4]">
             {item.progressLabel}

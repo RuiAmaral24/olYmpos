@@ -13,12 +13,9 @@ import {
   dashboardRecentReviews,
   mockLibraryItems,
 } from "@/data/mock-library";
+import { getCategoryCounts, getCategoryLabel } from "@/lib/library";
 
-const trackedCounts = {
-  Anime: mockLibraryItems.filter((item) => item.category === "Anime").length,
-  Movie: mockLibraryItems.filter((item) => item.category === "Movie").length,
-  Game: mockLibraryItems.filter((item) => item.category === "Game").length,
-};
+const trackedCounts = getCategoryCounts(mockLibraryItems);
 
 const favoriteItems = dashboardContinueItems.filter((item) => item.favorite);
 
@@ -30,17 +27,17 @@ export default function DashboardPage() {
       <section className="grid gap-4 md:grid-cols-3">
         <DashboardStatCard
           label="Anime Tracked"
-          value={trackedCounts.Anime}
+          value={trackedCounts.anime}
           detail="Series currently active in your olYmpos."
         />
         <DashboardStatCard
           label="Movies Tracked"
-          value={trackedCounts.Movie}
+          value={trackedCounts.movie}
           detail="Films saved for rewatches, ratings, and notes."
         />
         <DashboardStatCard
           label="Games Tracked"
-          value={trackedCounts.Game}
+          value={trackedCounts.game}
           detail="Campaigns and runs you are actively progressing."
         />
       </section>
@@ -74,7 +71,7 @@ export default function DashboardPage() {
                 <div className="flex items-start justify-between gap-4">
                   <div className="space-y-2">
                     <p className="text-xs uppercase tracking-[0.28em] text-accent-secondary">
-                      {item.category}
+                      {getCategoryLabel(item.category)}
                     </p>
                     <h3 className="text-lg font-semibold text-white">{item.title}</h3>
                     <p className="text-sm text-[#aeb8cf]">{item.status}</p>
@@ -137,17 +134,17 @@ export default function DashboardPage() {
           <div className="grid gap-4">
             <DashboardSummaryCard
               label="Anime"
-              value={trackedCounts.Anime}
+              value={trackedCounts.anime}
               hint="Episodes, seasons, and ongoing series."
             />
             <DashboardSummaryCard
               label="Movies"
-              value={trackedCounts.Movie}
+              value={trackedCounts.movie}
               hint="Feature films saved for ratings and rewatches."
             />
             <DashboardSummaryCard
               label="Games"
-              value={trackedCounts.Game}
+              value={trackedCounts.game}
               hint="Runs, campaigns, and titles still in motion."
             />
           </div>

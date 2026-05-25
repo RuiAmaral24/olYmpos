@@ -2,6 +2,7 @@ import { RefreshCcw, Star } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { getProgressPercent, getStatusLabel, getTrackingDetails } from "@/lib/library";
 import type { DetailedLibraryItem } from "@/types";
 
 type DetailsTrackingCardProps = {
@@ -9,6 +10,8 @@ type DetailsTrackingCardProps = {
 };
 
 export function DetailsTrackingCard({ item }: DetailsTrackingCardProps) {
+  const progressPercent = getProgressPercent(item);
+
   return (
     <Card className="space-y-6 border border-white/8 bg-[linear-gradient(180deg,rgba(19,28,44,0.92),rgba(9,14,24,0.98))]">
       <div className="space-y-2">
@@ -23,7 +26,7 @@ export function DetailsTrackingCard({ item }: DetailsTrackingCardProps) {
       <div className="grid gap-4 md:grid-cols-3">
         <div className="rounded-[1.5rem] border border-white/8 bg-white/4 p-4">
           <p className="text-xs uppercase tracking-[0.24em] text-[#92a2be]">Current Status</p>
-          <p className="mt-3 text-lg font-semibold text-white">{item.status}</p>
+          <p className="mt-3 text-lg font-semibold text-white">{getStatusLabel(item.status)}</p>
         </div>
         <div className="rounded-[1.5rem] border border-white/8 bg-white/4 p-4">
           <p className="text-xs uppercase tracking-[0.24em] text-[#92a2be]">User Rating</p>
@@ -34,19 +37,19 @@ export function DetailsTrackingCard({ item }: DetailsTrackingCardProps) {
         </div>
         <div className="rounded-[1.5rem] border border-white/8 bg-white/4 p-4">
           <p className="text-xs uppercase tracking-[0.24em] text-[#92a2be]">Progress Details</p>
-          <p className="mt-3 text-lg font-semibold text-white">{item.trackingDetails}</p>
+          <p className="mt-3 text-lg font-semibold text-white">{getTrackingDetails(item)}</p>
         </div>
       </div>
 
       <div className="space-y-3">
         <div className="flex items-center justify-between gap-3 text-sm">
           <span className="text-[#d7def0]">Progress</span>
-          <span className="text-[#9aabc5]">{item.progressPercent}%</span>
+          <span className="text-[#9aabc5]">{progressPercent}%</span>
         </div>
         <div className="h-3 overflow-hidden rounded-full bg-white/8">
           <div
             className="h-full rounded-full bg-[linear-gradient(90deg,var(--accent),var(--accent-secondary))]"
-            style={{ width: `${item.progressPercent}%` }}
+            style={{ width: `${progressPercent}%` }}
           />
         </div>
       </div>

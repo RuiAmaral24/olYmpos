@@ -9,6 +9,7 @@ import { DetailsReviewCard } from "@/components/details/details-review-card";
 import { DetailsTrackingCard } from "@/components/details/details-tracking-card";
 import { SectionTitle } from "@/components/ui/section-title";
 import { getDetailedLibraryItem, mockLibraryItems } from "@/data/mock-library";
+import { getCategoryLabel, getDisplayMetadata } from "@/lib/library";
 
 type DetailsPageProps = {
   params: Promise<{
@@ -30,13 +31,13 @@ export default async function DetailsPage({ params }: DetailsPageProps) {
 
   return (
     <div className="space-y-8 pb-8">
-      <DetailsBreadcrumb category={item.category} title={item.title} />
+      <DetailsBreadcrumb category={getCategoryLabel(item.category)} title={item.title} />
 
       <DetailsHeroCard item={item} />
 
       <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_360px]">
         <DetailsTrackingCard item={item} />
-        <DetailsMetadataCard metadata={item.metadata} />
+        <DetailsMetadataCard metadata={getDisplayMetadata(item)} />
       </div>
 
       <DetailsReviewCard review={item.userReview} />

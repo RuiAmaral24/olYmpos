@@ -3,6 +3,7 @@ import { ListPlus, Share2, SquarePen, Star } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { getCategoryLabel, getProgressLabel, getStatusLabel } from "@/lib/library";
 import type { DetailedLibraryItem } from "@/types";
 
 type DetailsHeroCardProps = {
@@ -10,6 +11,8 @@ type DetailsHeroCardProps = {
 };
 
 export function DetailsHeroCard({ item }: DetailsHeroCardProps) {
+  const progressLabel = getProgressLabel(item);
+
   return (
     <Card className="relative overflow-hidden border border-white/8 bg-[linear-gradient(135deg,rgba(18,27,44,0.96),rgba(9,14,24,0.98))] p-0">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(124,108,255,0.18),transparent_30%),radial-gradient(circle_at_84%_20%,rgba(78,161,255,0.14),transparent_24%)]" />
@@ -20,7 +23,7 @@ export function DetailsHeroCard({ item }: DetailsHeroCardProps) {
           <div className="absolute right-5 top-5 h-20 w-16 rounded-[1.2rem] border border-white/8 bg-[rgba(255,255,255,0.05)] shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]" />
           <div className="absolute inset-x-0 bottom-0 p-5">
             <div className="inline-flex rounded-full border border-white/12 bg-[rgba(7,11,20,0.62)] px-3 py-1 text-[11px] uppercase tracking-[0.24em] text-[#ebf0fb] backdrop-blur">
-              {item.progressLabel ?? item.status}
+              {progressLabel ?? getStatusLabel(item.status)}
             </div>
           </div>
         </div>
@@ -28,7 +31,7 @@ export function DetailsHeroCard({ item }: DetailsHeroCardProps) {
         <div className="space-y-6">
           <div className="flex flex-wrap items-center gap-3">
             <Badge className="border-white/12 bg-white/8 text-[#dde5f5]">
-              {item.category}
+              {getCategoryLabel(item.category)}
             </Badge>
             <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/6 px-3 py-1 text-sm text-[#f4d58d]">
               <Star className="h-4 w-4 fill-current" />

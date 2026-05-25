@@ -1,6 +1,7 @@
 import { Star } from "lucide-react";
 
 import { Card } from "@/components/ui/card";
+import { getCategoryLabel } from "@/lib/library";
 import type { DashboardReview } from "@/types";
 
 type DashboardReviewCardProps = {
@@ -13,7 +14,7 @@ export function DashboardReviewCard({ review }: DashboardReviewCardProps) {
       <div className="flex items-start justify-between gap-4">
         <div className="space-y-2">
           <p className="text-xs uppercase tracking-[0.28em] text-accent-secondary">
-            {review.category}
+            {getCategoryLabel(review.category)}
           </p>
           <h3 className="text-lg font-semibold text-white">{review.title}</h3>
         </div>

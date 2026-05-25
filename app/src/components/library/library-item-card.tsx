@@ -4,6 +4,7 @@ import { Heart, Pencil, Star } from "lucide-react";
 import Link from "next/link";
 
 import { Card } from "@/components/ui/card";
+import { getCategoryLabel, getProgressLabel, getStatusLabel } from "@/lib/library";
 import { cn } from "@/lib/utils";
 import type { LibraryItem } from "@/types";
 
@@ -13,6 +14,8 @@ type LibraryItemCardProps = {
 };
 
 export function LibraryItemCard({ item, onEdit }: LibraryItemCardProps) {
+  const progressLabel = getProgressLabel(item);
+
   return (
     <div className="group relative h-full">
       <Link href={`/details/${item.id}`} className="block h-full">
@@ -27,18 +30,18 @@ export function LibraryItemCard({ item, onEdit }: LibraryItemCardProps) {
             <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(7,11,20,0.05),rgba(7,11,20,0.58)_72%,rgba(7,11,20,0.92)_100%)]" />
             <div className="absolute inset-x-0 top-0 flex items-center justify-between p-4">
               <span className="rounded-full border border-white/12 bg-[rgba(7,11,20,0.58)] px-3 py-1 text-[11px] uppercase tracking-[0.22em] text-[#d6ddf0] backdrop-blur">
-                {item.category}
+                {getCategoryLabel(item.category)}
               </span>
-              {item.favorite ? (
+              {item.isFavorite ? (
                 <span className="flex h-10 w-10 items-center justify-center rounded-full border border-white/12 bg-[rgba(7,11,20,0.58)] text-[#f3b7cb] backdrop-blur">
                   <Heart className="h-4 w-4 fill-current" />
                 </span>
               ) : null}
             </div>
-            {item.progressLabel ? (
+            {progressLabel ? (
               <div className="absolute inset-x-0 bottom-0 p-4">
                 <span className="inline-flex rounded-full border border-white/12 bg-[rgba(7,11,20,0.66)] px-3 py-1 text-[11px] uppercase tracking-[0.22em] text-[#e2e8f5] backdrop-blur">
-                  {item.progressLabel}
+                  {progressLabel}
                 </span>
               </div>
             ) : null}
@@ -54,7 +57,7 @@ export function LibraryItemCard({ item, onEdit }: LibraryItemCardProps) {
                   <span className="text-sm text-[#94a3bd]">{item.year}</span>
                 ) : null}
               </div>
-              <p className="text-sm text-[#aeb8cf]">{item.status}</p>
+              <p className="text-sm text-[#aeb8cf]">{getStatusLabel(item.status)}</p>
             </div>
 
             <div className="flex items-center justify-between gap-3 border-t border-white/8 pt-4">

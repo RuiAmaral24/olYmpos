@@ -14,23 +14,12 @@ import {
   dashboardRecentReviews,
   mockLibraryItems,
 } from "@/data/mock-library";
+import { getCategoryCounts, getDashboardSummary, getFavoriteItems, getProgressLabel } from "@/lib/library";
 
-const trackedCounts = {
-  Anime: mockLibraryItems.filter((item) => item.category === "Anime").length,
-  Movie: mockLibraryItems.filter((item) => item.category === "Movie").length,
-  Game: mockLibraryItems.filter((item) => item.category === "Game").length,
-};
-
-const favoriteItems = mockLibraryItems.filter((item) => item.favorite).slice(0, 4);
-const recentActivity = mockLibraryItems.filter((item) => item.progressLabel).slice(0, 4);
-const totalItems = mockLibraryItems.length;
-const activitySummary = {
-  Completed: mockLibraryItems.filter((item) => item.status === "Completed").length,
-  WatchingPlaying: mockLibraryItems.filter(
-    (item) => item.status === "Watching" || item.status === "Playing",
-  ).length,
-  Planned: mockLibraryItems.filter((item) => item.status === "Planned").length,
-};
+const trackedCounts = getCategoryCounts(mockLibraryItems);
+const favoriteItems = getFavoriteItems(mockLibraryItems).slice(0, 4);
+const recentActivity = mockLibraryItems.filter((item) => getProgressLabel(item)).slice(0, 4);
+const activitySummary = getDashboardSummary(mockLibraryItems);
 
 export default function ProfilePage() {
   return (
@@ -57,17 +46,17 @@ export default function ProfilePage() {
       <section className="grid gap-4 md:grid-cols-3">
         <DashboardStatCard
           label="Anime Tracked"
-          value={trackedCounts.Anime}
+          value={trackedCounts.anime}
           detail="Series and seasons shaping your current universe."
         />
         <DashboardStatCard
           label="Movies Tracked"
-          value={trackedCounts.Movie}
+          value={trackedCounts.movie}
           detail="Films curated for ratings, favorites, and rewatches."
         />
         <DashboardStatCard
           label="Games Tracked"
-          value={trackedCounts.Game}
+          value={trackedCounts.game}
           detail="Campaigns and runs moving through your backlog."
         />
       </section>
@@ -138,20 +127,20 @@ export default function ProfilePage() {
           <Card className="space-y-5 border border-white/8 bg-[linear-gradient(180deg,rgba(20,29,46,0.92),rgba(10,14,24,0.98))]">
             <ProfileProgressRow
               label="Completed"
-              value={activitySummary.Completed}
-              total={totalItems}
+              value={activitySummary.completedItems}
+              total={activitySummary.totalItems}
               accentClassName="from-[#4ea1ff] to-[#7c6cff]"
             />
             <ProfileProgressRow
               label="Watching / Playing"
-              value={activitySummary.WatchingPlaying}
-              total={totalItems}
+              value={activitySummary.activeItems}
+              total={activitySummary.totalItems}
               accentClassName="from-[#7c6cff] to-[#d946ef]"
             />
             <ProfileProgressRow
               label="Planned"
-              value={activitySummary.Planned}
-              total={totalItems}
+              value={activitySummary.plannedItems}
+              total={activitySummary.totalItems}
               accentClassName="from-[#f59e0b] to-[#fb7185]"
             />
           </Card>

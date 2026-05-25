@@ -16,13 +16,13 @@ type EntryModalProps = {
 
 const defaultValues: EntryFormValues = {
   title: "",
-  category: "Anime",
-  status: "Planned",
+  category: "anime",
+  status: "planned",
   rating: 4,
   favorite: false,
   season: "",
   episode: "",
-  movieState: "Watched",
+  movieState: "watched",
   chapter: "",
   runLabel: "",
   hoursPlayed: "",
@@ -96,7 +96,10 @@ function EntryModalContent({
   );
 }
 
-function getInitialValues(item: LibraryItem | null | undefined, mode: EntryModalMode) {
+function getInitialValues(
+  item: LibraryItem | null | undefined,
+  mode: EntryModalMode,
+): EntryFormValues {
   if (mode === "add" || !item) {
     return defaultValues;
   }
@@ -106,32 +109,18 @@ function getInitialValues(item: LibraryItem | null | undefined, mode: EntryModal
     category: item.category,
     status: item.status,
     rating: item.rating,
-    favorite: Boolean(item.favorite),
-    season: item.category === "Anime" ? extractNumber(item.progressLabel, 0) : "",
-    episode: item.category === "Anime" ? extractNumber(item.progressLabel, 1) : "",
+    favorite: item.isFavorite,
+    season: item.category === "anime" ? String(item.progress.currentSeason) : "",
+    episode: item.category === "anime" ? String(item.progress.currentEpisode) : "",
     movieState:
-      item.category === "Movie" && item.status === "Completed" ? "Completed" : "Watched",
-    chapter: item.category === "Game" ? extractAfterKeyword(item.progressLabel, "Chapter") : "",
-    runLabel: item.category === "Game" ? extractAfterKeyword(item.progressLabel, "Run") : "",
-    hoursPlayed: "",
+      item.category === "movie" && item.progress.reviewDrafted
+        ? "review_ready"
+        : item.category === "movie" && item.progress.completed
+          ? "completed"
+          : "watched",
+    chapter: item.category === "game" ? item.progress.chapter ?? "" : "",
+    runLabel: item.category === "game" ? item.progress.runLabel ?? "" : "",
+    hoursPlayed: item.category === "game" ? String(item.progress.hoursPlayed) : "",
     notes: "",
   };
-}
-
-function extractNumber(value: string | undefined, index: number) {
-  if (!value) {
-    return "";
-  }
-
-  const matches = value.match(/\d+/g);
-  return matches?.[index] ?? "";
-}
-
-function extractAfterKeyword(value: string | undefined, keyword: string) {
-  if (!value) {
-    return "";
-  }
-
-  const match = value.match(new RegExp(`${keyword}\\s+(\\d+)`, "i"));
-  return match?.[1] ?? "";
 }
