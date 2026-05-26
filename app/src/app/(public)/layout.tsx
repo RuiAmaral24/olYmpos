@@ -10,7 +10,7 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
   return (
     <div className="min-h-screen bg-background">
       <PublicNavbar />
-      <main className="mx-auto flex min-h-[calc(100vh-73px)] w-full max-w-7xl px-6 pb-10 pt-8 sm:pt-9">
+      <main className="mx-auto flex min-h-[calc(100vh-68px)] w-full max-w-7xl px-4 pb-10 pt-5 sm:px-6 sm:pt-8 lg:px-8">
         {children}
       </main>
     </div>

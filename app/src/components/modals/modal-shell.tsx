@@ -50,7 +50,7 @@ export function ModalShell({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
+    <div className="fixed inset-0 z-50 flex items-end justify-center p-0 sm:items-center sm:p-6">
       <button
         type="button"
         aria-label="Close modal"
@@ -59,18 +59,18 @@ export function ModalShell({
       />
       <div
         className={cn(
-          "relative z-10 w-full max-w-4xl overflow-hidden rounded-[2rem] border border-white/10 bg-[linear-gradient(180deg,rgba(17,24,39,0.98),rgba(8,12,22,0.99))] shadow-[0_32px_120px_rgba(0,0,0,0.56)]",
+          "relative z-10 w-full max-w-4xl overflow-hidden rounded-t-[1.75rem] border border-white/10 bg-[linear-gradient(180deg,rgba(17,24,39,0.98),rgba(8,12,22,0.99))] shadow-[0_32px_120px_rgba(0,0,0,0.56)] sm:rounded-[2rem]",
           className,
         )}
       >
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(124,108,255,0.2),transparent_28%),radial-gradient(circle_at_82%_18%,rgba(78,161,255,0.14),transparent_22%)]" />
-        <div className="relative border-b border-white/8 px-6 py-5 sm:px-8">
+        <div className="relative border-b border-white/8 px-5 py-5 sm:px-8">
           <div className="flex items-start justify-between gap-4">
-            <div className="space-y-2">
-              <p className="text-xs uppercase tracking-[0.28em] text-accent-secondary">
+            <div className="min-w-0 space-y-2">
+              <p className="text-xs uppercase tracking-[0.22em] text-accent-secondary sm:tracking-[0.28em]">
                 Entry Editor
               </p>
-              <h2 className="text-3xl font-semibold tracking-[-0.04em] text-white">
+              <h2 className="text-2xl font-semibold tracking-[-0.04em] text-white sm:text-3xl">
                 {title}
               </h2>
               <p className="max-w-2xl text-sm leading-6 text-[#aeb8cf]">
@@ -80,14 +80,14 @@ export function ModalShell({
             <button
               type="button"
               aria-label="Close modal"
-              className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-white/6 text-muted-foreground transition hover:text-white"
+              className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/6 text-muted-foreground transition hover:text-white sm:h-11 sm:w-11"
               onClick={onClose}
             >
               <X className="h-4 w-4" />
             </button>
           </div>
         </div>
-        <div className="relative max-h-[calc(100vh-9rem)] overflow-y-auto px-6 py-6 sm:px-8 sm:py-8">
+        <div className="soft-scrollbar relative max-h-[calc(100vh-7rem)] overflow-y-auto px-5 py-5 sm:max-h-[calc(100vh-9rem)] sm:px-8 sm:py-8">
           {children}
         </div>
       </div>

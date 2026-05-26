@@ -20,10 +20,10 @@ export function DetailsMetadataCard({ metadata }: DetailsMetadataCardProps) {
         {metadata.map((entry) => (
           <div
             key={entry.label}
-            className="flex items-center justify-between gap-4 border-b border-white/8 pb-4 last:border-b-0 last:pb-0"
+            className="flex flex-col gap-1 border-b border-white/8 pb-4 last:border-b-0 last:pb-0 sm:flex-row sm:items-center sm:justify-between sm:gap-4"
           >
             <span className="text-sm text-[#95a4bf]">{entry.label}</span>
-            <span className="text-sm font-medium text-white">{entry.value}</span>
+            <span className="text-sm font-medium text-white">{entry.value || "Not set"}</span>
           </div>
         ))}
       </div>

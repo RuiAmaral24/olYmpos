@@ -20,7 +20,7 @@ const variants: Record<ButtonVariant, string> = {
 
 export function buttonVariants(variant: ButtonVariant = "primary") {
   return cn(
-    "inline-flex h-11 items-center justify-center gap-2 rounded-full px-5 text-sm font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] disabled:pointer-events-none disabled:opacity-50",
+    "inline-flex h-11 min-w-0 items-center justify-center gap-2 rounded-full px-5 text-sm font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] disabled:pointer-events-none disabled:opacity-50",
     variants[variant],
   );
 }
@@ -41,7 +41,7 @@ export function Button({
       {...props}
     >
       {leftIcon}
-      <span>{children}</span>
+      <span className="min-w-0 truncate">{children}</span>
       {rightIcon}
     </button>
   );

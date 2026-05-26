@@ -24,17 +24,17 @@ export function AppHeader({ user }: AppHeaderProps) {
   const initials = getInitials(displayName);
 
   return (
-    <header className="premium-panel relative z-20 rounded-[30px] px-4 py-4 sm:px-6">
+    <header className="premium-panel sticky top-3 z-20 rounded-[24px] px-4 py-4 backdrop-blur-xl sm:top-4 sm:rounded-[30px] sm:px-6">
       <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
         <div className="flex items-start justify-between gap-4">
-          <div className="flex items-center gap-4">
-            <BrandLockup href="/" compact />
+          <div className="flex min-w-0 items-center gap-3 sm:gap-4">
+            <BrandLockup href="/dashboard" compact />
             <div className="hidden h-12 w-px bg-white/8 lg:block" />
-            <div className="space-y-1.5">
-              <p className="text-[11px] uppercase tracking-[0.3em] text-accent-secondary">
+            <div className="min-w-0 space-y-1.5">
+              <p className="text-[11px] uppercase tracking-[0.24em] text-accent-secondary sm:tracking-[0.3em]">
                 {pageMeta.label}
               </p>
-              <p className="text-sm text-[#aeb8cf]">
+              <p className="hidden text-sm text-[#aeb8cf] sm:block">
                 {pageMeta.description}
               </p>
             </div>
@@ -49,8 +49,8 @@ export function AppHeader({ user }: AppHeaderProps) {
           </div>
         </div>
 
-        <div className="flex flex-1 items-center gap-3 xl:max-w-3xl xl:justify-end">
-          <div className="relative w-full xl:max-w-md">
+        <div className="flex flex-1 flex-col gap-3 sm:flex-row sm:items-center xl:max-w-3xl xl:justify-end">
+          <div className="relative w-full min-w-0 xl:max-w-md">
             <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               aria-label="Search"
@@ -77,8 +77,8 @@ export function AppHeader({ user }: AppHeaderProps) {
             {initials}
           </Link>
 
-          <form action={logout}>
-            <Button type="submit" variant="secondary" className="h-10 px-4">
+          <form action={logout} className="sm:shrink-0">
+            <Button type="submit" variant="secondary" className="h-10 w-full px-4 sm:w-auto">
               Sign Out
             </Button>
           </form>

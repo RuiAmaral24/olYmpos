@@ -27,19 +27,19 @@ export function DetailsTrackingCard({ item }: DetailsTrackingCardProps) {
 
       <div className="grid gap-4 md:grid-cols-3">
         <div className="rounded-[1.5rem] border border-white/8 bg-white/4 p-4">
-          <p className="text-xs uppercase tracking-[0.24em] text-[#92a2be]">Current Status</p>
+          <p className="text-xs uppercase tracking-[0.2em] text-[#92a2be] sm:tracking-[0.24em]">Current Status</p>
           <p className="mt-3 text-lg font-semibold text-white">{getStatusLabel(item.status)}</p>
         </div>
         <div className="rounded-[1.5rem] border border-white/8 bg-white/4 p-4">
-          <p className="text-xs uppercase tracking-[0.24em] text-[#92a2be]">User Rating</p>
+          <p className="text-xs uppercase tracking-[0.2em] text-[#92a2be] sm:tracking-[0.24em]">User Rating</p>
           <div className="mt-3 flex items-center gap-2 text-lg font-semibold text-white">
             <Star className="h-4 w-4 fill-current text-[#f4d58d]" />
             <span>{item.userRating.toFixed(1)}</span>
           </div>
         </div>
         <div className="rounded-[1.5rem] border border-white/8 bg-white/4 p-4">
-          <p className="text-xs uppercase tracking-[0.24em] text-[#92a2be]">Progress Details</p>
-          <p className="mt-3 text-lg font-semibold text-white">{getTrackingDetails(item)}</p>
+          <p className="text-xs uppercase tracking-[0.2em] text-[#92a2be] sm:tracking-[0.24em]">Progress Details</p>
+          <p className="mt-3 text-lg font-semibold text-white">{getTrackingDetails(item) || "Not started"}</p>
         </div>
       </div>
 

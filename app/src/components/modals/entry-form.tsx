@@ -47,14 +47,14 @@ export function EntryForm({
   error,
 }: EntryFormProps) {
   return (
-    <div className="grid gap-6 lg:grid-cols-[minmax(0,1.3fr)_320px]">
+    <div className="grid gap-5 lg:grid-cols-[minmax(0,1.3fr)_320px] lg:gap-6">
       <div className="space-y-6">
         {error ? (
           <StatusMessage tone="error" title="Check this entry">
             {error}
           </StatusMessage>
         ) : null}
-        <section className="grid gap-5 rounded-[1.75rem] border border-white/8 bg-white/4 p-5 sm:grid-cols-2">
+        <section className="grid gap-4 rounded-[1.5rem] border border-white/8 bg-white/4 p-4 sm:grid-cols-2 sm:gap-5 sm:rounded-[1.75rem] sm:p-5">
           <Field label="Title" className="sm:col-span-2">
             <Input
               value={values.title}
@@ -118,7 +118,7 @@ export function EntryForm({
           </Field>
         </section>
 
-        <section className="space-y-4 rounded-[1.75rem] border border-white/8 bg-white/4 p-5">
+        <section className="space-y-4 rounded-[1.5rem] border border-white/8 bg-white/4 p-4 sm:rounded-[1.75rem] sm:p-5">
           <div className="space-y-2">
             <p className="text-xs uppercase tracking-[0.26em] text-accent-secondary">
               Progress Inputs
@@ -187,7 +187,7 @@ export function EntryForm({
           ) : null}
         </section>
 
-        <section className="space-y-3 rounded-[1.75rem] border border-white/8 bg-white/4 p-5">
+        <section className="space-y-3 rounded-[1.5rem] border border-white/8 bg-white/4 p-4 sm:rounded-[1.75rem] sm:p-5">
           <Field label="Personal Review / Notes">
             <textarea
               value={values.notes}
@@ -200,7 +200,7 @@ export function EntryForm({
         </section>
       </div>
 
-      <aside className="space-y-5 rounded-[1.75rem] border border-white/8 bg-[linear-gradient(180deg,rgba(21,30,47,0.92),rgba(10,14,24,0.98))] p-5">
+      <aside className="space-y-5 rounded-[1.5rem] border border-white/8 bg-[linear-gradient(180deg,rgba(21,30,47,0.92),rgba(10,14,24,0.98))] p-4 sm:rounded-[1.75rem] sm:p-5">
         <div className="space-y-3">
           <p className="text-xs uppercase tracking-[0.26em] text-accent-secondary">
             Preview

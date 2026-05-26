@@ -11,14 +11,14 @@ type DashboardReviewCardProps = {
 export function DashboardReviewCard({ review }: DashboardReviewCardProps) {
   return (
     <Card className="border border-white/8 bg-[linear-gradient(180deg,rgba(20,28,43,0.9),rgba(11,16,27,0.96))]">
-      <div className="flex items-start justify-between gap-4">
-        <div className="space-y-2">
-          <p className="text-xs uppercase tracking-[0.28em] text-accent-secondary">
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0 space-y-2">
+          <p className="text-xs uppercase tracking-[0.22em] text-accent-secondary sm:tracking-[0.28em]">
             {getCategoryLabel(review.category)}
           </p>
           <h3 className="text-lg font-semibold text-white">{review.title}</h3>
         </div>
-        <div className="flex items-center gap-1 rounded-full border border-white/10 bg-white/6 px-3 py-1 text-sm text-[#f4d58d]">
+        <div className="flex shrink-0 items-center gap-1 rounded-full border border-white/10 bg-white/6 px-3 py-1 text-sm text-[#f4d58d]">
           <Star className="h-3.5 w-3.5 fill-current" />
           <span>{review.rating.toFixed(1)}</span>
         </div>

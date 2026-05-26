@@ -19,12 +19,12 @@ export function AuthSideContent({
   className,
 }: AuthSideContentProps) {
   return (
-    <div className={cn("max-w-xl space-y-6 lg:space-y-8", className)}>
+    <div className={cn("max-w-xl space-y-5 lg:space-y-8", className)}>
       <Badge className="border-white/12 bg-white/8 text-[#cfd7ea]">
         {badge}
       </Badge>
       <div className="space-y-4">
-        <h1 className="max-w-md text-[2.8rem] font-semibold tracking-[-0.04em] text-white sm:text-[3.45rem]">
+        <h1 className="max-w-md text-[2.35rem] font-semibold leading-[1.02] tracking-[-0.04em] text-white sm:text-[3.25rem]">
           {title}
         </h1>
         <p className="max-w-lg text-base leading-7 text-[#b6c1d7] sm:text-lg">

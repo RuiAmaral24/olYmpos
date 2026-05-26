@@ -23,7 +23,7 @@ export function LibraryItemCard({
 
   return (
     <div className="group relative h-full">
-      <Link href={`/details/${item.id}`} className="block h-full">
+      <Link href={`/details/${item.id}`} className="block h-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)]">
         <Card className="h-full overflow-hidden border border-white/8 bg-[linear-gradient(180deg,rgba(19,27,43,0.94),rgba(9,13,22,0.98))] p-0 transition group-hover:border-white/14">
           <div className="relative">
             <div
@@ -55,7 +55,7 @@ export function LibraryItemCard({
           <div className="space-y-4 p-5">
             <div className="space-y-2">
               <div className="flex items-start justify-between gap-4">
-                <h3 className="text-lg font-semibold leading-6 text-white transition group-hover:text-[#f3f7ff]">
+                <h3 className="min-w-0 text-lg font-semibold leading-6 text-white transition group-hover:text-[#f3f7ff]">
                   {item.title}
                 </h3>
                 {item.year ? (

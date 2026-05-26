@@ -13,7 +13,7 @@ export function AuthShell({ sideContent, children, className }: AuthShellProps) 
   return (
     <section
       className={cn(
-        "relative flex w-full items-center overflow-hidden rounded-[2rem] border border-white/8 bg-[linear-gradient(135deg,rgba(6,10,18,0.95),rgba(8,12,22,0.9))] shadow-[0_30px_120px_rgba(2,6,18,0.7)]",
+        "relative flex w-full items-center overflow-hidden rounded-[1.75rem] border border-white/8 bg-[linear-gradient(135deg,rgba(6,10,18,0.95),rgba(8,12,22,0.9))] shadow-[0_30px_120px_rgba(2,6,18,0.7)] sm:rounded-[2rem]",
         className,
       )}
     >
@@ -24,7 +24,7 @@ export function AuthShell({ sideContent, children, className }: AuthShellProps) 
       <div className="absolute inset-x-0 bottom-0 h-40 bg-[linear-gradient(180deg,transparent,rgba(7,11,20,0.86))]" />
       <div className="absolute inset-y-0 right-0 hidden w-px bg-white/8 lg:block" />
 
-      <div className="relative z-10 grid w-full gap-10 px-6 py-8 sm:px-8 sm:py-10 lg:grid-cols-[minmax(0,1.08fr)_minmax(420px,500px)] lg:gap-12 lg:px-12 lg:py-14">
+      <div className="relative z-10 grid w-full gap-8 px-5 py-7 sm:px-8 sm:py-10 lg:grid-cols-[minmax(0,1.08fr)_minmax(380px,500px)] lg:gap-10 lg:px-10 lg:py-12 xl:gap-12 xl:px-12 xl:py-14">
         <div className="flex min-h-full items-center">
           {sideContent}
         </div>

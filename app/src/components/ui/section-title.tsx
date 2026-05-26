@@ -27,12 +27,12 @@ export function SectionTitle({
     >
       <div className="space-y-3">
         {eyebrow ? (
-          <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-accent-secondary">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-accent-secondary sm:tracking-[0.3em]">
             {eyebrow}
           </p>
         ) : null}
         <div className="space-y-2">
-          <h2 className="text-[1.85rem] font-semibold tracking-[-0.03em] text-foreground sm:text-[2.15rem]">
+          <h2 className="text-[1.7rem] font-semibold tracking-[-0.03em] text-foreground sm:text-[2.15rem]">
             {title}
           </h2>
           {description ? (

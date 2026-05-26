@@ -21,14 +21,14 @@ export function AuthCard({
   return (
     <Card
       className={cn(
-        "relative w-full max-w-[500px] overflow-hidden rounded-[2rem] border-white/10 bg-[linear-gradient(180deg,rgba(16,23,37,0.94),rgba(10,15,26,0.98))] p-6 sm:p-8",
+        "relative w-full max-w-[500px] overflow-hidden rounded-[1.75rem] border-white/10 bg-[linear-gradient(180deg,rgba(16,23,37,0.94),rgba(10,15,26,0.98))] p-5 sm:rounded-[2rem] sm:p-8",
         className,
       )}
     >
       <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-[radial-gradient(circle_at_top,rgba(124,108,255,0.16),transparent_58%)]" />
       <div className="relative space-y-8">
         <div className="space-y-3">
-          <h2 className="text-3xl font-semibold tracking-[-0.03em] text-white">
+          <h2 className="text-[1.85rem] font-semibold tracking-[-0.03em] text-white sm:text-3xl">
             {title}
           </h2>
           <p className="max-w-sm text-sm leading-6 text-[#9ca8c0]">
