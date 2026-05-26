@@ -9,23 +9,30 @@ type DashboardReviewCardProps = {
 };
 
 export function DashboardReviewCard({ review }: DashboardReviewCardProps) {
+  const stars = Array.from({ length: 5 }, (_, index) => index < Math.round(review.rating));
+
   return (
-    <Card className="border border-white/8 bg-[linear-gradient(180deg,rgba(20,28,43,0.9),rgba(11,16,27,0.96))]">
-      <div className="flex items-start justify-between gap-3">
+    <Card className="rounded-2xl border border-[#2d2454] bg-[linear-gradient(135deg,rgba(17,18,34,0.94),rgba(12,13,25,0.98))] p-6 shadow-[0_20px_64px_rgba(3,7,18,0.3)] transition hover:border-[#8b5cf6]/42">
+      <div className="flex items-start justify-between gap-4">
         <div className="min-w-0 space-y-2">
-          <p className="text-xs uppercase tracking-[0.22em] text-accent-secondary sm:tracking-[0.28em]">
+          <h3 className="text-lg font-semibold text-white">{review.title}</h3>
+          <p className="text-sm font-medium text-[#a78bfa]">
             {getCategoryLabel(review.category)}
           </p>
-          <h3 className="text-lg font-semibold text-white">{review.title}</h3>
         </div>
-        <div className="flex shrink-0 items-center gap-1 rounded-full border border-white/10 bg-white/6 px-3 py-1 text-sm text-[#f4d58d]">
-          <Star className="h-3.5 w-3.5 fill-current" />
-          <span>{review.rating.toFixed(1)}</span>
+        <div className="flex shrink-0 items-center gap-1 pt-1 text-[#fbbf24]">
+          {stars.map((filled, index) => (
+            <Star
+              key={index}
+              className={filled ? "h-4 w-4 fill-current" : "h-4 w-4 text-[#4b5563]"}
+            />
+          ))}
         </div>
       </div>
-      <p className="mt-5 border-t border-white/8 pt-5 text-sm leading-6 text-[#aeb8cf]">
+      <p className="mt-5 text-base leading-7 text-[#c7bee4]">
         {review.excerpt}
       </p>
+      <p className="mt-4 text-xs text-[#837296]">Recently added</p>
     </Card>
   );
 }

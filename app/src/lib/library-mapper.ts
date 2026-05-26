@@ -58,6 +58,21 @@ const dashboardAccents = [
   "from-[#22c55e]/35 via-[#163727]/10 to-transparent",
 ];
 
+const dashboardArtwork: Record<MediaCategory, string[]> = {
+  anime: [
+    "https://images.unsplash.com/photo-1764520408437-95890a95db4d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixlib=rb-4.1.0&q=80&w=1080",
+    "https://images.unsplash.com/photo-1763732397784-c5ff2651d40c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixlib=rb-4.1.0&q=80&w=1080",
+  ],
+  movie: [
+    "https://images.unsplash.com/photo-1563202221-f4eae97e4828?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixlib=rb-4.1.0&q=80&w=1080",
+    "https://images.unsplash.com/photo-1765510296004-614b6cc204da?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixlib=rb-4.1.0&q=80&w=1080",
+  ],
+  game: [
+    "https://images.unsplash.com/photo-1634658340808-9abaef7eb9a7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixlib=rb-4.1.0&q=80&w=1080",
+    "https://images.unsplash.com/photo-1592840496694-26d035b52b48?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixlib=rb-4.1.0&q=80&w=1080",
+  ],
+};
+
 export function mapLibraryItemRow(row: LibraryItemRow): LibraryItem {
   const category = parseCategory(row.category);
   const status = parseStatus(row.status);
@@ -225,8 +240,16 @@ export function toDashboardTrackedItem(item: LibraryItem, index: number): Dashbo
     status: buildDashboardStatus(item),
     progressLabel: `${Math.round(getItemPercent(item))}% complete`,
     accent: dashboardAccents[index % dashboardAccents.length],
+    coverUrl: item.coverUrl ?? getDashboardArtwork(item.category, index),
+    rating: item.rating,
     favorite: item.isFavorite,
   };
+}
+
+export function getDashboardArtwork(category: MediaCategory, index = 0) {
+  const artwork = dashboardArtwork[category];
+
+  return artwork[index % artwork.length];
 }
 
 export function toDashboardReview(item: LibraryItem): DashboardReview | null {

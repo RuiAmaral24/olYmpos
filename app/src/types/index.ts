@@ -144,6 +144,8 @@ export type DashboardTrackedItem = {
   status: string;
   progressLabel: string;
   accent: string;
+  coverUrl?: string;
+  rating?: number;
   favorite?: boolean;
 };
 

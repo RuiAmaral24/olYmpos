@@ -1,5 +1,9 @@
+import { Star } from "lucide-react";
+import Link from "next/link";
+
 import { Card } from "@/components/ui/card";
 import { getCategoryLabel } from "@/lib/library";
+import { getDashboardArtwork } from "@/lib/library-mapper";
 import { cn } from "@/lib/utils";
 import type { DashboardTrackedItem } from "@/types";
 
@@ -8,27 +12,39 @@ type DashboardMediaCardProps = {
 };
 
 export function DashboardMediaCard({ item }: DashboardMediaCardProps) {
+  const coverUrl = item.coverUrl ?? getDashboardArtwork(item.category);
+  const rating = item.rating ?? 5;
+
   return (
-    <Card className="relative overflow-hidden border border-white/8 p-0">
-      <div className={cn("absolute inset-0 bg-gradient-to-br opacity-100", item.accent)} />
-      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(8,12,22,0.18),rgba(8,12,22,0.95))]" />
-      <div className="absolute right-5 top-5 h-20 w-16 rounded-[1.25rem] border border-white/8 bg-[rgba(255,255,255,0.05)] shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]" />
-      <div className="relative space-y-10 p-5 sm:space-y-12 sm:p-6">
-        <div className="flex flex-col items-start gap-3 sm:flex-row sm:justify-between">
-          <p className="text-xs uppercase tracking-[0.22em] text-[#d3dcf0] sm:tracking-[0.28em]">
-            {getCategoryLabel(item.category)}
-          </p>
-          <span className="max-w-full rounded-full border border-white/12 bg-white/8 px-3 py-1 text-[11px] uppercase tracking-[0.18em] text-[#dfe6f4] sm:tracking-[0.22em]">
-            {item.progressLabel}
-          </span>
+    <Link href={`/details/${item.id}`} className="group block h-full">
+      <Card className="h-full overflow-hidden rounded-2xl border border-[#2d2454] bg-[linear-gradient(135deg,rgba(17,18,34,0.94),rgba(12,13,25,0.98))] p-0 shadow-[0_24px_80px_rgba(3,7,18,0.34)] transition duration-300 group-hover:-translate-y-1 group-hover:border-[#8b5cf6]/45">
+        <div className="relative h-64 overflow-hidden sm:h-72">
+          <div
+            className="absolute inset-0 bg-cover bg-center transition duration-500 group-hover:scale-110"
+            style={{ backgroundImage: `url("${coverUrl}")` }}
+          />
+          <div className={cn("absolute inset-0 bg-gradient-to-br opacity-40", item.accent)} />
+          <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(8,11,20,0.08)_0%,rgba(10,12,24,0.5)_58%,rgba(10,11,22,0.96)_100%)]" />
+          <div className="absolute right-3 top-3 flex items-center gap-1 rounded-lg bg-[#090b14]/82 px-2.5 py-1.5 text-sm font-semibold text-white backdrop-blur-md">
+            <Star className="h-4 w-4 fill-[#fbbf24] text-[#fbbf24]" />
+            <span>{rating.toFixed(rating % 1 === 0 ? 0 : 1)}</span>
+          </div>
+          {item.favorite ? (
+            <div className="absolute left-3 top-3 flex h-9 w-9 items-center justify-center rounded-lg bg-[#9b5cff]/88 text-white backdrop-blur-md">
+              <Star className="h-4 w-4 fill-current" />
+            </div>
+          ) : null}
         </div>
-        <div className="space-y-2">
-          <h3 className="text-xl font-semibold tracking-[-0.03em] text-white">
+        <div className="space-y-2 p-5">
+          <h3 className="line-clamp-1 text-lg font-semibold text-[#f0f4ff]">
             {item.title}
           </h3>
-          <p className="text-sm leading-6 text-[#b0bdd5]">{item.status}</p>
+          <p className="text-sm font-medium text-[#a78bfa]">
+            {getCategoryLabel(item.category)}
+          </p>
+          <p className="text-sm text-[#c7bee4]">{item.progressLabel || item.status}</p>
         </div>
-      </div>
-    </Card>
+      </Card>
+    </Link>
   );
 }

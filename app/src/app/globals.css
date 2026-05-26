@@ -1,15 +1,15 @@
 @import "tailwindcss";
 
 :root {
-  --background: #070b14;
-  --surface: #0f1729;
-  --surface-elevated: #162033;
-  --border: rgba(148, 163, 184, 0.18);
+  --background: #080b14;
+  --surface: #101121;
+  --surface-elevated: #15172a;
+  --border: rgba(139, 92, 246, 0.22);
   --foreground: #f3f7ff;
-  --muted-foreground: #8d9ab3;
-  --accent: #7c6cff;
-  --accent-secondary: #4ea1ff;
-  --ring: rgba(124, 108, 255, 0.45);
+  --muted-foreground: #98a4bd;
+  --accent: #9b6dff;
+  --accent-secondary: #8b5cf6;
+  --ring: rgba(155, 109, 255, 0.48);
 }
 
 @theme inline {
@@ -31,15 +31,22 @@
 
 html {
   background:
-    radial-gradient(circle at top, rgba(124, 108, 255, 0.16), transparent 32%),
-    radial-gradient(circle at right top, rgba(78, 161, 255, 0.12), transparent 26%),
+    radial-gradient(circle at 18% 8%, rgba(139, 92, 246, 0.1), transparent 34%),
+    radial-gradient(circle at 86% 26%, rgba(59, 130, 246, 0.08), transparent 30%),
+    radial-gradient(ellipse at center, rgba(22, 31, 66, 0.2), transparent 58%),
     var(--background);
 }
 
 body {
-  background: var(--background);
+  background:
+    linear-gradient(180deg, rgba(13, 17, 31, 0.99), rgba(8, 11, 20, 1) 42%),
+    var(--background);
   color: var(--foreground);
   font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+}
+
+.editorial-title {
+  font-family: Georgia, "Times New Roman", serif;
 }
 
 a {
@@ -53,11 +60,11 @@ a {
 }
 
 .premium-panel {
-  background: linear-gradient(180deg, rgba(20, 29, 46, 0.92), rgba(11, 17, 29, 0.98));
+  background: linear-gradient(180deg, rgba(17, 19, 34, 0.94), rgba(9, 11, 20, 0.98));
   border: 1px solid var(--border);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.03),
-    0 24px 80px rgba(3, 8, 20, 0.42);
+    0 24px 80px rgba(3, 7, 18, 0.48);
 }
 
 .premium-panel,
