@@ -1,10 +1,23 @@
 import { Card } from "@/components/ui/card";
+import { EmptyState } from "@/components/ui/empty-state";
+import { MessageSquareText } from "lucide-react";
 
 type DetailsReviewCardProps = {
   review: string | null;
 };
 
 export function DetailsReviewCard({ review }: DetailsReviewCardProps) {
+  if (!review) {
+    return (
+      <EmptyState
+        eyebrow="No Review Yet"
+        title="No personal review has been saved"
+        description="Add notes from the library edit flow to keep this title's record current."
+        icon={<MessageSquareText className="h-5 w-5" />}
+      />
+    );
+  }
+
   return (
     <Card className="space-y-4 border border-white/8 bg-[linear-gradient(180deg,rgba(18,27,43,0.92),rgba(10,14,24,0.98))]">
       <div className="space-y-2">

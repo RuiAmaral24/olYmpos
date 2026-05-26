@@ -85,15 +85,33 @@ function EntryModalContent({
   saving,
 }: EntryModalContentProps) {
   const [values, setValues] = useState<EntryFormValues>(initialValues);
+  const [validationError, setValidationError] = useState<string | null>(null);
 
   const handleChange = <K extends keyof EntryFormValues>(
     field: K,
     value: EntryFormValues[K],
   ) => {
+    setValidationError(null);
     setValues((current) => ({
       ...current,
       [field]: value,
     }));
+  };
+
+  const handleSubmit = () => {
+    const title = values.title.trim();
+
+    if (!title) {
+      setValidationError("Add a title before saving this entry.");
+      return;
+    }
+
+    if (!Number.isFinite(values.rating) || values.rating < 0 || values.rating > 5) {
+      setValidationError("Rating must be between 0 and 5.");
+      return;
+    }
+
+    onSave({ ...values, title });
   };
 
   return (
@@ -102,9 +120,10 @@ function EntryModalContent({
       values={values}
       onChange={handleChange}
       onCancel={onCancel}
-      onSubmit={() => onSave(values)}
+      onSubmit={handleSubmit}
       onDelete={onDelete}
       saving={saving}
+      error={validationError}
     />
   );
 }

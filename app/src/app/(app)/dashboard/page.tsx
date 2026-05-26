@@ -1,4 +1,4 @@
-import { Heart, Layers3, LibraryBig } from "lucide-react";
+import { Heart, Layers3, LibraryBig, MessageSquareText, PlayCircle, Star } from "lucide-react";
 
 import { DashboardActionCard } from "@/components/dashboard/dashboard-action-card";
 import { DashboardHero } from "@/components/dashboard/dashboard-hero";
@@ -7,6 +7,7 @@ import { DashboardReviewCard } from "@/components/dashboard/dashboard-review-car
 import { DashboardStatCard } from "@/components/dashboard/dashboard-stat-card";
 import { DashboardSummaryCard } from "@/components/dashboard/dashboard-summary-card";
 import { Card } from "@/components/ui/card";
+import { EmptyState } from "@/components/ui/empty-state";
 import { SectionTitle } from "@/components/ui/section-title";
 import {
   toDashboardReview,
@@ -62,9 +63,13 @@ export default async function DashboardPage() {
               <DashboardMediaCard key={item.id} item={item} />
             ))
           ) : (
-            <Card className="border border-white/8 bg-white/4 text-sm leading-6 text-[#aeb8cf] xl:col-span-3">
-              Add active anime, movies, or games to see your real progress here.
-            </Card>
+            <EmptyState
+              className="xl:col-span-3"
+              eyebrow="No Tracked Items Yet"
+              title="Start tracking your first active title"
+              description="Add an anime, movie, or game from your library and set progress to see what is ready to resume."
+              icon={<PlayCircle className="h-5 w-5" />}
+            />
           )}
         </div>
       </section>
@@ -96,9 +101,12 @@ export default async function DashboardPage() {
                 </div>
               </Card>
             )) : (
-              <Card className="border border-white/8 bg-white/4 text-sm leading-6 text-[#aeb8cf]">
-                Favorite titles from your library will collect here.
-              </Card>
+              <EmptyState
+                eyebrow="No Favorites Yet"
+                title="Nothing has been crowned favorite"
+                description="Mark standout titles as favorites from the library to collect them here."
+                icon={<Star className="h-5 w-5" />}
+              />
             )}
           </div>
         </section>
@@ -115,9 +123,12 @@ export default async function DashboardPage() {
                 <DashboardReviewCard key={review.id} review={review} />
               ))
             ) : (
-              <Card className="border border-white/8 bg-white/4 text-sm leading-6 text-[#aeb8cf]">
-                Add review notes while editing an entry to surface them here.
-              </Card>
+              <EmptyState
+                eyebrow="No Reviews Yet"
+                title="Your impressions are waiting"
+                description="Add review notes while editing an entry to surface recent thoughts and scores here."
+                icon={<MessageSquareText className="h-5 w-5" />}
+              />
             )}
           </div>
         </section>

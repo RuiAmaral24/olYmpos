@@ -1,10 +1,11 @@
 import Link from "next/link";
 
+import { AuthSubmitButton } from "@/components/auth/auth-submit-button";
 import { AuthCard } from "@/components/auth/auth-card";
 import { AuthShell } from "@/components/auth/auth-shell";
 import { AuthSideContent } from "@/components/auth/auth-side-content";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { StatusMessage } from "@/components/ui/status-message";
 import { login } from "@/lib/supabase/auth";
 
 type LoginPageProps = {
@@ -52,14 +53,14 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
         >
           <form action={login} className="space-y-5">
             {error ? (
-              <p className="rounded-2xl border border-red-400/20 bg-red-500/10 px-4 py-3 text-sm text-red-100">
+              <StatusMessage tone="error" title="Login failed">
                 {error}
-              </p>
+              </StatusMessage>
             ) : null}
             {message ? (
-              <p className="rounded-2xl border border-emerald-300/20 bg-emerald-400/10 px-4 py-3 text-sm text-emerald-100">
+              <StatusMessage tone="success">
                 {message}
-              </p>
+              </StatusMessage>
             ) : null}
             <div className="space-y-2">
               <label htmlFor="email" className="text-sm font-medium text-[#d9e2f2]">
@@ -97,9 +98,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
                 Forgot password
               </Link>
             </div>
-            <Button type="submit" className="h-12 w-full rounded-2xl text-sm font-semibold">
-              Login
-            </Button>
+            <AuthSubmitButton idleLabel="Login" pendingLabel="Signing in" />
           </form>
         </AuthCard>
       </AuthShell>

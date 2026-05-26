@@ -1,12 +1,16 @@
 "use client";
 
-import { useState, useTransition } from "react";
-import { Plus } from "lucide-react";
+import { useMemo, useState, useTransition } from "react";
+import { LibraryBig, Plus, SearchX } from "lucide-react";
 
 import { LibraryFilterBar } from "@/components/library/library-filter-bar";
 import { LibraryItemCard } from "@/components/library/library-item-card";
 import { EntryModal } from "@/components/modals/entry-modal";
 import { Button } from "@/components/ui/button";
+import { EmptyState } from "@/components/ui/empty-state";
+import { StatusMessage } from "@/components/ui/status-message";
+import { useToast } from "@/components/ui/toast-provider";
+import { getCategoryLabel, getStatusLabel } from "@/lib/library";
 import {
   deleteLibraryItem,
   saveLibraryItem,
@@ -18,13 +22,93 @@ type LibraryManagerProps = {
   initialItems: LibraryItem[];
 };
 
+type CategoryFilter = "All" | "Anime" | "Movies" | "Games";
+type StatusFilter =
+  | "All Status"
+  | "Favorites"
+  | "Completed"
+  | "Watching / Playing"
+  | "Planned";
+type SortOption = "Recently Added" | "Highest Rated" | "Alphabetical";
+
 export function LibraryManager({ initialItems }: LibraryManagerProps) {
   const [items, setItems] = useState(initialItems);
+  const [searchValue, setSearchValue] = useState("");
+  const [activeCategory, setActiveCategory] = useState<CategoryFilter>("All");
+  const [activeStatus, setActiveStatus] = useState<StatusFilter>("All Status");
+  const [sortValue, setSortValue] = useState<SortOption>("Recently Added");
   const [modalOpen, setModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState<EntryModalMode>("add");
   const [selectedItem, setSelectedItem] = useState<LibraryItem | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
+  const { showToast } = useToast();
+
+  const visibleItems = useMemo(() => {
+    const normalizedSearch = searchValue.trim().toLowerCase();
+
+    return [...items]
+      .filter((item) => {
+        if (activeCategory === "All") {
+          return true;
+        }
+
+        if (activeCategory === "Anime") {
+          return item.category === "anime";
+        }
+
+        if (activeCategory === "Movies") {
+          return item.category === "movie";
+        }
+
+        return item.category === "game";
+      })
+      .filter((item) => {
+        if (activeStatus === "All Status") {
+          return true;
+        }
+
+        if (activeStatus === "Favorites") {
+          return item.isFavorite;
+        }
+
+        if (activeStatus === "Watching / Playing") {
+          return item.status === "watching" || item.status === "playing";
+        }
+
+        return getStatusLabel(item.status) === activeStatus;
+      })
+      .filter((item) => {
+        if (!normalizedSearch) {
+          return true;
+        }
+
+        return [
+          item.title,
+          getCategoryLabel(item.category),
+          getStatusLabel(item.status),
+          item.description,
+        ]
+          .filter(Boolean)
+          .some((value) => value.toLowerCase().includes(normalizedSearch));
+      })
+      .sort((first, second) => {
+        if (sortValue === "Highest Rated") {
+          return second.rating - first.rating;
+        }
+
+        if (sortValue === "Alphabetical") {
+          return first.title.localeCompare(second.title);
+        }
+
+        return new Date(second.updatedAt).getTime() - new Date(first.updatedAt).getTime();
+      });
+  }, [activeCategory, activeStatus, items, searchValue, sortValue]);
+
+  const hasActiveFilters =
+    searchValue.trim() !== "" ||
+    activeCategory !== "All" ||
+    activeStatus !== "All Status";
 
   const openAddModal = () => {
     setSelectedItem(null);
@@ -52,6 +136,15 @@ export function LibraryManager({ initialItems }: LibraryManagerProps) {
           return current.map((item) => (item.id === savedItem.id ? savedItem : item));
         });
         setModalOpen(false);
+        showToast(
+          values.notes.trim()
+            ? modalMode === "add"
+              ? "Item added to olYmpos. Review saved."
+              : "Item updated. Review saved."
+            : modalMode === "add"
+              ? "Item added to olYmpos."
+              : "Item updated.",
+        );
       } catch (saveError) {
         setError(saveError instanceof Error ? saveError.message : "Could not save item.");
       }
@@ -69,6 +162,7 @@ export function LibraryManager({ initialItems }: LibraryManagerProps) {
         await deleteLibraryItem(selectedItem.id);
         setItems((current) => current.filter((item) => item.id !== selectedItem.id));
         setModalOpen(false);
+        showToast("Item deleted.");
       } catch (deleteError) {
         setError(deleteError instanceof Error ? deleteError.message : "Could not delete item.");
       }
@@ -87,6 +181,7 @@ export function LibraryManager({ initialItems }: LibraryManagerProps) {
     startTransition(async () => {
       try {
         await toggleLibraryItemFavorite(item.id, nextFavorite);
+        showToast(nextFavorite ? "Added to favorites." : "Removed from favorites.");
       } catch (favoriteError) {
         setError(
           favoriteError instanceof Error
@@ -104,12 +199,22 @@ export function LibraryManager({ initialItems }: LibraryManagerProps) {
 
   return (
     <div className="space-y-8 pb-8">
-      <LibraryFilterBar resultsCount={items.length} />
+      <LibraryFilterBar
+        resultsCount={visibleItems.length}
+        searchValue={searchValue}
+        activeCategory={activeCategory}
+        activeStatus={activeStatus}
+        sortValue={sortValue}
+        onSearchChange={setSearchValue}
+        onCategoryChange={setActiveCategory}
+        onStatusChange={setActiveStatus}
+        onSortChange={setSortValue}
+      />
 
       {error ? (
-        <div className="rounded-2xl border border-red-400/20 bg-red-500/10 px-4 py-3 text-sm text-red-100">
+        <StatusMessage tone="error" title="Action failed">
           {error}
-        </div>
+        </StatusMessage>
       ) : null}
 
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -142,8 +247,8 @@ export function LibraryManager({ initialItems }: LibraryManagerProps) {
       </div>
 
       <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-        {items.length > 0 ? (
-          items.map((item) => (
+        {visibleItems.length > 0 ? (
+          visibleItems.map((item) => (
             <LibraryItemCard
               key={item.id}
               item={item}
@@ -151,10 +256,52 @@ export function LibraryManager({ initialItems }: LibraryManagerProps) {
               onToggleFavorite={() => handleFavoriteToggle(item)}
             />
           ))
+        ) : items.length === 0 ? (
+          <EmptyState
+            className="sm:col-span-2 xl:col-span-3"
+            eyebrow="Empty Library"
+            title="Your olYmpos library is ready"
+            description="Add your first anime, movie, or game to begin tracking progress, ratings, favorites, and reviews."
+            icon={<LibraryBig className="h-5 w-5" />}
+            action={(
+              <Button
+                className="h-11 rounded-2xl px-5"
+                leftIcon={<Plus className="h-4 w-4" />}
+                onClick={openAddModal}
+              >
+                Add Content
+              </Button>
+            )}
+          />
+        ) : hasActiveFilters ? (
+          <EmptyState
+            className="sm:col-span-2 xl:col-span-3"
+            eyebrow="No Results"
+            title="No titles match this view"
+            description="Adjust your search, category, or status filters to bring more of your olYmpos back into view."
+            icon={<SearchX className="h-5 w-5" />}
+            action={(
+              <Button
+                variant="secondary"
+                className="h-11 rounded-2xl px-5"
+                onClick={() => {
+                  setSearchValue("");
+                  setActiveCategory("All");
+                  setActiveStatus("All Status");
+                }}
+              >
+                Clear Filters
+              </Button>
+            )}
+          />
         ) : (
-          <div className="rounded-[1.75rem] border border-white/8 bg-white/4 p-6 text-sm leading-6 text-[#aeb8cf] sm:col-span-2 xl:col-span-3">
-            Your olYmpos library is ready. Add your first anime, movie, or game to start tracking real progress.
-          </div>
+          <EmptyState
+            className="sm:col-span-2 xl:col-span-3"
+            eyebrow="No Results"
+            title="No titles are visible"
+            description="Try another sort or add a new entry to refresh this collection view."
+            icon={<SearchX className="h-5 w-5" />}
+          />
         )}
       </section>
 

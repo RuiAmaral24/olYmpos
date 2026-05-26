@@ -1,7 +1,10 @@
-import { SlidersHorizontal, Sparkles } from "lucide-react";
+"use client";
+
+import { Search, SlidersHorizontal, Sparkles } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 
 const categoryFilters = ["All", "Anime", "Movies", "Games"] as const;
@@ -16,9 +19,31 @@ const sortOptions = ["Recently Added", "Highest Rated", "Alphabetical"] as const
 
 type LibraryFilterBarProps = {
   resultsCount: number;
+  searchValue: string;
+  activeCategory: CategoryFilter;
+  activeStatus: StatusFilter;
+  sortValue: SortOption;
+  onSearchChange: (value: string) => void;
+  onCategoryChange: (value: CategoryFilter) => void;
+  onStatusChange: (value: StatusFilter) => void;
+  onSortChange: (value: SortOption) => void;
 };
 
-export function LibraryFilterBar({ resultsCount }: LibraryFilterBarProps) {
+type CategoryFilter = (typeof categoryFilters)[number];
+type StatusFilter = (typeof statusFilters)[number];
+type SortOption = (typeof sortOptions)[number];
+
+export function LibraryFilterBar({
+  resultsCount,
+  searchValue,
+  activeCategory,
+  activeStatus,
+  sortValue,
+  onSearchChange,
+  onCategoryChange,
+  onStatusChange,
+  onSortChange,
+}: LibraryFilterBarProps) {
   return (
     <Card className="space-y-6 border border-white/8 bg-[linear-gradient(180deg,rgba(18,27,43,0.94),rgba(10,14,24,0.98))]">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
@@ -44,15 +69,31 @@ export function LibraryFilterBar({ resultsCount }: LibraryFilterBarProps) {
 
       <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_minmax(260px,300px)]">
         <div className="space-y-5">
+          <div className="space-y-3">
+            <p className="text-xs uppercase tracking-[0.26em] text-[#92a2be]">
+              Search
+            </p>
+            <div className="relative">
+              <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#92a2be]" />
+              <Input
+                value={searchValue}
+                onChange={(event) => onSearchChange(event.target.value)}
+                placeholder="Search by title, status, or category"
+                className="pl-10"
+              />
+            </div>
+          </div>
           <FilterGroup
             label="Category"
             items={categoryFilters}
-            activeItem="All"
+            activeItem={activeCategory}
+            onChange={onCategoryChange}
           />
           <FilterGroup
             label="Status"
             items={statusFilters}
-            activeItem="All Status"
+            activeItem={activeStatus}
+            onChange={onStatusChange}
           />
         </div>
 
@@ -63,7 +104,8 @@ export function LibraryFilterBar({ resultsCount }: LibraryFilterBarProps) {
           <label className="block">
             <span className="sr-only">Sort library items</span>
             <select
-              defaultValue="Recently Added"
+              value={sortValue}
+              onChange={(event) => onSortChange(event.target.value as SortOption)}
               className={cn(
                 "h-12 w-full rounded-2xl border border-white/10 bg-white/6 px-4 text-sm text-foreground outline-none",
                 "focus:border-white/20 focus:ring-2 focus:ring-[var(--ring)]",
@@ -86,12 +128,14 @@ type FilterGroupProps<T extends string> = {
   label: string;
   items: readonly T[];
   activeItem: T;
+  onChange: (item: T) => void;
 };
 
 function FilterGroup<T extends string>({
   label,
   items,
   activeItem,
+  onChange,
 }: FilterGroupProps<T>) {
   return (
     <div className="space-y-3">
@@ -101,7 +145,8 @@ function FilterGroup<T extends string>({
           const isActive = item === activeItem;
 
           return (
-            <span
+            <button
+              type="button"
               key={item}
               className={cn(
                 "inline-flex h-11 items-center rounded-full border px-4 text-sm transition",
@@ -109,9 +154,10 @@ function FilterGroup<T extends string>({
                   ? "border-[rgba(124,108,255,0.55)] bg-[linear-gradient(135deg,rgba(124,108,255,0.22),rgba(78,161,255,0.16))] text-white shadow-[0_12px_30px_rgba(78,161,255,0.14)]"
                   : "border-white/10 bg-white/6 text-[#b8c2d6]",
               )}
+              onClick={() => onChange(item)}
             >
               {item}
-            </span>
+            </button>
           );
         })}
       </div>

@@ -23,6 +23,14 @@ export async function saveLibraryItem(values: EntryFormValues, itemId?: string) 
     throw new Error("You must be signed in to save library items.");
   }
 
+  if (!values.title.trim()) {
+    throw new Error("A title is required before saving.");
+  }
+
+  if (!Number.isFinite(values.rating) || values.rating < 0 || values.rating > 5) {
+    throw new Error("Rating must be between 0 and 5.");
+  }
+
   const payload = formValuesToLibraryPayload(values, user.id);
   const query = itemId
     ? supabase

@@ -1,4 +1,4 @@
-import { Sparkles } from "lucide-react";
+import { Activity, MessageSquareText, Sparkles, Star } from "lucide-react";
 
 import { DashboardReviewCard } from "@/components/dashboard/dashboard-review-card";
 import { DashboardStatCard } from "@/components/dashboard/dashboard-stat-card";
@@ -8,6 +8,7 @@ import { ProfileHeroCard } from "@/components/profile/profile-hero-card";
 import { ProfileProgressRow } from "@/components/profile/profile-progress-row";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
+import { EmptyState } from "@/components/ui/empty-state";
 import { SectionTitle } from "@/components/ui/section-title";
 import { toDashboardReview } from "@/lib/library-mapper";
 import { getCategoryCounts, getDashboardSummary, getFavoriteItems, getProgressLabel } from "@/lib/library";
@@ -80,9 +81,13 @@ export default async function ProfilePage() {
                 <ProfileFavoriteCard key={item.id} item={item} />
               ))
             ) : (
-              <Card className="border border-white/8 bg-white/4 text-sm leading-6 text-[#aeb8cf] sm:col-span-2">
-                Favorite titles from your library will appear here.
-              </Card>
+              <EmptyState
+                className="sm:col-span-2"
+                eyebrow="No Favorites Yet"
+                title="Your signature favorites are still open"
+                description="Favorite titles from your library to shape the taste profile shown here."
+                icon={<Star className="h-5 w-5" />}
+              />
             )}
           </div>
         </section>
@@ -99,9 +104,12 @@ export default async function ProfilePage() {
                 <DashboardReviewCard key={review.id} review={review} />
               ))
             ) : (
-              <Card className="border border-white/8 bg-white/4 text-sm leading-6 text-[#aeb8cf]">
-                Your review notes will appear here once you add them to entries.
-              </Card>
+              <EmptyState
+                eyebrow="No Reviews Yet"
+                title="No published notes yet"
+                description="Your review notes will appear here once you add them to entries."
+                icon={<MessageSquareText className="h-5 w-5" />}
+              />
             )}
           </div>
         </section>
@@ -120,9 +128,12 @@ export default async function ProfilePage() {
                 <ProfileActivityRow key={item.id} item={item} />
               ))
             ) : (
-              <Card className="border border-white/8 bg-white/4 text-sm leading-6 text-[#aeb8cf]">
-                Track progress on an entry to build your activity feed.
-              </Card>
+              <EmptyState
+                eyebrow="No Recent Activity"
+                title="Your activity feed is quiet"
+                description="Track progress on an entry to build a recent activity trail."
+                icon={<Activity className="h-5 w-5" />}
+              />
             )}
           </div>
           <Card className="border border-white/8 bg-[linear-gradient(135deg,rgba(18,26,42,0.88),rgba(9,14,24,0.96))]">

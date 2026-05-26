@@ -172,7 +172,7 @@ export type DashboardSummary = {
 export type DetailedLibraryItem = LibraryItem & {
   genres: string[];
   synopsis: string;
-  userReview: string;
+  userReview: string | null;
   userRating: number;
   relatedIds: string[];
 };

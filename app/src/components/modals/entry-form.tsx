@@ -1,10 +1,11 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { Heart, Sparkles, Star } from "lucide-react";
+import { Heart, Loader2, Sparkles, Star } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { StatusMessage } from "@/components/ui/status-message";
 import { getCategoryLabel, getStatusLabel } from "@/lib/library";
 import { cn } from "@/lib/utils";
 import type { EntryFormValues, EntryModalMode, MediaCategory, TrackingStatus } from "@/types";
@@ -32,6 +33,7 @@ type EntryFormProps = {
   onSubmit: () => void;
   onDelete?: () => void;
   saving?: boolean;
+  error?: string | null;
 };
 
 export function EntryForm({
@@ -42,16 +44,24 @@ export function EntryForm({
   onSubmit,
   onDelete,
   saving = false,
+  error,
 }: EntryFormProps) {
   return (
     <div className="grid gap-6 lg:grid-cols-[minmax(0,1.3fr)_320px]">
       <div className="space-y-6">
+        {error ? (
+          <StatusMessage tone="error" title="Check this entry">
+            {error}
+          </StatusMessage>
+        ) : null}
         <section className="grid gap-5 rounded-[1.75rem] border border-white/8 bg-white/4 p-5 sm:grid-cols-2">
           <Field label="Title" className="sm:col-span-2">
             <Input
               value={values.title}
               onChange={(event) => onChange("title", event.target.value)}
               placeholder="Enter a title"
+              required
+              aria-invalid={Boolean(error && !values.title.trim())}
             />
           </Field>
           <Field label="Category">
@@ -81,6 +91,7 @@ export function EntryForm({
                 className="pl-10"
                 value={values.rating}
                 onChange={(event) => onChange("rating", Number(event.target.value))}
+                required
               />
             </div>
           </Field>
@@ -94,6 +105,7 @@ export function EntryForm({
                   : "border-white/10 bg-white/6 text-[#b8c2d6]",
               )}
               onClick={() => onChange("favorite", !values.favorite)}
+              disabled={saving}
             >
               <Heart
                 className={cn(
@@ -221,15 +233,21 @@ export function EntryForm({
                 className="h-12 rounded-2xl border-red-300/20 text-red-100 hover:bg-red-500/10"
                 onClick={onDelete}
                 disabled={saving}
+                leftIcon={saving ? <Loader2 className="h-4 w-4 animate-spin" /> : undefined}
               >
-                Delete Entry
+                {saving ? "Working" : "Delete Entry"}
               </Button>
             ) : null}
             <Button variant="secondary" className="h-12 rounded-2xl" onClick={onCancel} disabled={saving}>
               Cancel
             </Button>
-            <Button className="h-12 rounded-2xl" onClick={onSubmit} disabled={saving}>
-              {mode === "add" ? "Add Entry" : "Save Changes"}
+            <Button
+              className="h-12 rounded-2xl"
+              onClick={onSubmit}
+              disabled={saving}
+              leftIcon={saving ? <Loader2 className="h-4 w-4 animate-spin" /> : undefined}
+            >
+              {saving ? "Saving" : mode === "add" ? "Add Entry" : "Save Changes"}
             </Button>
           </div>
         </div>

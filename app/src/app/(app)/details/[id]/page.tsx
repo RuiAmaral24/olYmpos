@@ -1,3 +1,4 @@
+import { LibraryBig } from "lucide-react";
 import { notFound } from "next/navigation";
 
 import { DetailsBreadcrumb } from "@/components/details/details-breadcrumb";
@@ -7,6 +8,7 @@ import { DetailsQuickActions } from "@/components/details/details-quick-actions"
 import { DetailsRelatedCard } from "@/components/details/details-related-card";
 import { DetailsReviewCard } from "@/components/details/details-review-card";
 import { DetailsTrackingCard } from "@/components/details/details-tracking-card";
+import { EmptyState } from "@/components/ui/empty-state";
 import { SectionTitle } from "@/components/ui/section-title";
 import { mapDetailedItem } from "@/lib/library-mapper";
 import { getCategoryLabel, getDisplayMetadata } from "@/lib/library";
@@ -51,9 +53,19 @@ export default async function DetailsPage({ params }: DetailsPageProps) {
           description="A few nearby picks that fit the same corner of your olYmpos."
         />
         <div className="grid gap-4 md:grid-cols-3">
-          {relatedItems.map((relatedItem) => (
-            <DetailsRelatedCard key={relatedItem.id} item={relatedItem} />
-          ))}
+          {relatedItems.length > 0 ? (
+            relatedItems.map((relatedItem) => (
+              <DetailsRelatedCard key={relatedItem.id} item={relatedItem} />
+            ))
+          ) : (
+            <EmptyState
+              className="md:col-span-3"
+              eyebrow="No Related Titles"
+              title="This corner of your olYmpos is still focused"
+              description="Add more titles from the same category to build related recommendations here."
+              icon={<LibraryBig className="h-5 w-5" />}
+            />
+          )}
         </div>
       </section>
 

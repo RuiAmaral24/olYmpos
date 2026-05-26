@@ -167,9 +167,7 @@ export function mapDetailedItem(item: LibraryItem, allItems: LibraryItem[]): Det
     ...item,
     genres,
     synopsis: item.description,
-    userReview:
-      item.review?.body ??
-      "No personal review yet. Add notes from the library edit flow to keep this title's record current.",
+    userReview: item.review?.body ?? null,
     userRating: item.rating,
     relatedIds: allItems
       .filter((entry) => entry.id !== item.id && entry.category === item.category)

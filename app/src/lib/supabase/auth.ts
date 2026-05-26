@@ -41,6 +41,11 @@ export async function login(formData: FormData) {
 
   const email = String(formData.get("email") ?? "");
   const password = String(formData.get("password") ?? "");
+
+  if (!email.trim() || !password) {
+    redirect(`/login?${authErrorParam("Email and password are required.")}`);
+  }
+
   const supabase = await createServerSupabaseClient();
 
   const { error } = await supabase.auth.signInWithPassword({
@@ -64,6 +69,14 @@ export async function signup(formData: FormData) {
   const email = String(formData.get("email") ?? "").trim();
   const password = String(formData.get("password") ?? "");
   const confirmPassword = String(formData.get("confirm-password") ?? "");
+
+  if (!username || !email || !password) {
+    redirect(`/signup?${authErrorParam("Username, email, and password are required.")}`);
+  }
+
+  if (password.length < 6) {
+    redirect(`/signup?${authErrorParam("Password must be at least 6 characters.")}`);
+  }
 
   if (password !== confirmPassword) {
     redirect(`/signup?${authErrorParam("Passwords do not match.")}`);

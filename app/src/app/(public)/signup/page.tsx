@@ -1,10 +1,11 @@
 import Link from "next/link";
 
+import { AuthSubmitButton } from "@/components/auth/auth-submit-button";
 import { AuthCard } from "@/components/auth/auth-card";
 import { AuthShell } from "@/components/auth/auth-shell";
 import { AuthSideContent } from "@/components/auth/auth-side-content";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { StatusMessage } from "@/components/ui/status-message";
 import { signup } from "@/lib/supabase/auth";
 
 type SignupPageProps = {
@@ -51,9 +52,9 @@ export default async function SignupPage({ searchParams }: SignupPageProps) {
         >
           <form action={signup} className="space-y-5">
             {error ? (
-              <p className="rounded-2xl border border-red-400/20 bg-red-500/10 px-4 py-3 text-sm text-red-100">
+              <StatusMessage tone="error" title="Signup failed">
                 {error}
-              </p>
+              </StatusMessage>
             ) : null}
             <div className="space-y-2">
               <label htmlFor="username" className="text-sm font-medium text-[#d9e2f2]">
@@ -105,9 +106,7 @@ export default async function SignupPage({ searchParams }: SignupPageProps) {
                 required
               />
             </div>
-            <Button type="submit" className="h-12 w-full rounded-2xl text-sm font-semibold">
-              Create Account
-            </Button>
+            <AuthSubmitButton idleLabel="Create Account" pendingLabel="Creating account" />
           </form>
         </AuthCard>
       </AuthShell>
