@@ -32,7 +32,7 @@ export function SectionTitle({
           </p>
         ) : null}
         <div className="space-y-2">
-          <h2 className="text-[1.7rem] font-semibold tracking-[-0.03em] text-foreground sm:text-[2.15rem]">
+          <h2 className="section-subtitle">
             {title}
           </h2>
           {description ? (

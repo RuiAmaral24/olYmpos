@@ -47,15 +47,10 @@ export function EntryModal({
     <ModalShell
       open={open}
       onClose={onClose}
-      title={mode === "add" ? "Add Entry" : "Edit Entry"}
-      subtitle={
-        mode === "add"
-          ? "Shape a new title inside your olYmpos with the same premium tracking flow used across the app."
-          : "Refine this entry, update progress, and keep your olYmpos perfectly current."
-      }
     >
       <EntryModalContent
         key={formKey}
+        item={item}
         mode={mode}
         initialValues={getInitialValues(item, mode)}
         onCancel={onClose}
@@ -68,6 +63,7 @@ export function EntryModal({
 }
 
 type EntryModalContentProps = {
+  item?: LibraryItem | null;
   mode: EntryModalMode;
   initialValues: EntryFormValues;
   onCancel: () => void;
@@ -77,6 +73,7 @@ type EntryModalContentProps = {
 };
 
 function EntryModalContent({
+  item,
   mode,
   initialValues,
   onCancel,
@@ -117,6 +114,7 @@ function EntryModalContent({
   return (
     <EntryForm
       mode={mode}
+      coverUrl={item?.coverUrl ?? null}
       values={values}
       onChange={handleChange}
       onCancel={onCancel}

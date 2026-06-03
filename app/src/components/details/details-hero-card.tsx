@@ -1,9 +1,9 @@
-import { ListPlus, Share2, SquarePen, Star } from "lucide-react";
+import { Calendar, Heart, ListPlus, Share2, SquarePen, Star, Tv } from "lucide-react";
+import Link from "next/link";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { getCategoryLabel, getProgressLabel, getStatusLabel } from "@/lib/library";
+import { getCategoryLabel } from "@/lib/library";
 import type { DetailedLibraryItem } from "@/types";
 
 type DetailsHeroCardProps = {
@@ -11,67 +11,84 @@ type DetailsHeroCardProps = {
 };
 
 export function DetailsHeroCard({ item }: DetailsHeroCardProps) {
-  const progressLabel = getProgressLabel(item);
+  const coverStyle = item.coverUrl
+    ? { backgroundImage: `url("${item.coverUrl}")` }
+    : undefined;
 
   return (
-    <Card className="relative overflow-hidden border border-white/8 bg-[linear-gradient(135deg,rgba(18,27,44,0.96),rgba(9,14,24,0.98))] p-0">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(124,108,255,0.18),transparent_30%),radial-gradient(circle_at_84%_20%,rgba(78,161,255,0.14),transparent_24%)]" />
-      <div className="relative grid gap-6 p-5 md:grid-cols-[220px_minmax(0,1fr)] lg:grid-cols-[280px_minmax(0,1fr)] lg:gap-8 lg:p-8">
-        <div className="relative overflow-hidden rounded-[1.5rem] border border-white/8 sm:rounded-[2rem]">
-          <div className={`h-[280px] bg-gradient-to-br sm:h-[320px] lg:h-[360px] ${item.coverAccent}`} />
-          <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(7,11,20,0.08),rgba(7,11,20,0.24)_55%,rgba(7,11,20,0.82)_100%)]" />
-          <div className="absolute right-5 top-5 h-20 w-16 rounded-[1.2rem] border border-white/8 bg-[rgba(255,255,255,0.05)] shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]" />
-          <div className="absolute inset-x-0 bottom-0 p-5">
-            <div className="inline-flex rounded-full border border-white/12 bg-[rgba(7,11,20,0.62)] px-3 py-1 text-[11px] uppercase tracking-[0.24em] text-[#ebf0fb] backdrop-blur">
-              {progressLabel ?? getStatusLabel(item.status)}
-            </div>
+    <section className="grid gap-8 lg:grid-cols-[320px_minmax(0,1fr)]">
+      <div className="relative h-[34rem] overflow-hidden rounded-2xl border border-[#8b5cf6]/35 shadow-[0_28px_90px_rgba(3,7,18,0.42)]">
+        <div
+          className={`absolute inset-0 bg-cover bg-center ${item.coverUrl ? "" : `bg-gradient-to-br ${item.coverAccent}`}`}
+          style={coverStyle}
+        />
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(8,10,18,0.02),rgba(8,10,18,0.18)_48%,rgba(8,10,18,0.72)_100%)]" />
+        <button
+          type="button"
+          aria-label={item.isFavorite ? "Remove favorite" : "Add favorite"}
+          className="absolute right-4 top-4 flex h-12 w-12 items-center justify-center rounded-full border border-[#8b5cf6]/40 bg-[#0a0a0f]/80 text-[#8b5cf6] backdrop-blur transition hover:bg-[#8b5cf6]/20"
+        >
+          <Heart className={item.isFavorite ? "h-5 w-5 fill-current" : "h-5 w-5"} />
+        </button>
+      </div>
+
+      <div className="min-w-0 py-1 lg:pt-0">
+        <div className="mb-4 flex flex-wrap items-center gap-3">
+          <Badge className="gap-2 rounded-lg border-[#8b5cf6]/45 bg-[#8b5cf6]/24 px-3 py-1.5 text-sm font-bold normal-case tracking-[0] text-[#c4b5fd]">
+            <Tv className="h-4 w-4" />
+            {getCategoryLabel(item.category)}
+          </Badge>
+          <div className="flex items-center gap-1.5">
+            <Star className="h-5 w-5 fill-[#fbbf24] text-[#fbbf24]" />
+            <span className="text-xl font-bold text-[#f0f4ff]">
+              {item.rating.toFixed(1)}
+            </span>
+            <span className="text-sm font-semibold text-[#b8c1ec]">/ 10</span>
           </div>
         </div>
 
-        <div className="min-w-0 space-y-6">
-          <div className="flex flex-wrap items-center gap-3">
-            <Badge className="border-white/12 bg-white/8 text-[#dde5f5]">
-              {getCategoryLabel(item.category)}
-            </Badge>
-            <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/6 px-3 py-1 text-sm text-[#f4d58d]">
-              <Star className="h-4 w-4 fill-current" />
-              <span>{item.rating.toFixed(1)}</span>
-            </div>
-            <span className="text-sm text-[#95a4bf]">{item.year}</span>
-          </div>
+        <h1 className="editorial-title mb-5 bg-[linear-gradient(135deg,#f3f0ff,#d8ceff,#c4b5fd)] bg-clip-text text-5xl font-normal leading-[0.98] tracking-[0] text-transparent sm:text-6xl lg:text-7xl">
+          {item.title}
+        </h1>
 
-          <div className="space-y-4">
-            <h1 className="text-[2.2rem] font-semibold leading-[1.02] tracking-[-0.04em] text-white sm:text-[3.35rem]">
-              {item.title}
-            </h1>
-            <div className="flex flex-wrap gap-3">
-              {item.genres.map((genre) => (
-                <span
-                  key={genre}
-                  className="inline-flex rounded-full border border-white/10 bg-white/6 px-4 py-2 text-sm text-[#d8e0f2]"
-                >
-                  {genre}
-                </span>
-              ))}
-            </div>
-            <p className="max-w-3xl text-sm leading-7 text-[#afbad1] sm:text-base">
-              {item.synopsis}
-            </p>
-          </div>
+        <div className="mb-6 flex flex-wrap items-center gap-3">
+          {item.genres.map((genre) => (
+            <span
+              key={genre}
+              className="rounded-lg border border-[#8b5cf6]/24 bg-[#1a1a2e]/80 px-3 py-1.5 text-sm font-semibold text-[#b8c1ec]"
+            >
+              {genre}
+            </span>
+          ))}
+          <span className="flex items-center gap-2 text-sm font-semibold text-[#9a72ff]">
+            <Calendar className="h-4 w-4" />
+            {item.year}
+          </span>
+        </div>
 
-          <div className="grid gap-3 sm:flex sm:flex-wrap">
-            <Button className="h-12 w-full rounded-2xl px-6 sm:w-auto" leftIcon={<SquarePen className="h-4 w-4" />}>
+        <div className="mb-8 max-w-3xl">
+          <h2 className="editorial-title mb-3 text-2xl font-normal text-[#f3f0ff]">
+            Synopsis
+          </h2>
+          <p className="text-base leading-8 text-[#b8c1ec]">
+            {item.synopsis}
+          </p>
+        </div>
+
+        <div className="flex flex-wrap items-center gap-4">
+          <Link href="/library">
+            <Button className="h-12 rounded-xl px-6" leftIcon={<SquarePen className="h-4 w-4" />}>
               Edit Entry
             </Button>
-            <Button variant="secondary" className="h-12 w-full rounded-2xl px-5 sm:w-auto" leftIcon={<Share2 className="h-4 w-4" />}>
-              Share
-            </Button>
-            <Button variant="secondary" className="h-12 w-full rounded-2xl px-5 sm:w-auto" leftIcon={<ListPlus className="h-4 w-4" />}>
-              Add to List
-            </Button>
-          </div>
-        </div>
+          </Link>
+          <Button variant="secondary" className="h-12 rounded-xl border-[#8b5cf6]/40 bg-transparent px-6 text-[#b8c1ec]" leftIcon={<Share2 className="h-4 w-4" />}>
+            Share
+          </Button>
+          <Button variant="secondary" className="h-12 rounded-xl border-[#8b5cf6]/40 bg-transparent px-6 text-[#b8c1ec]" leftIcon={<ListPlus className="h-4 w-4" />}>
+            Add to List
+          </Button>
       </div>
-    </Card>
+      </div>
+    </section>
   );
 }

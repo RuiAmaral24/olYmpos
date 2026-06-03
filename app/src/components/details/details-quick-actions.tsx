@@ -2,9 +2,8 @@
 
 import { useState, useTransition } from "react";
 import Link from "next/link";
-import { CheckCircle2, Heart, Loader2, SquarePen } from "lucide-react";
+import { Check, Heart, Loader2, SquarePen } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { StatusMessage } from "@/components/ui/status-message";
 import { useToast } from "@/components/ui/toast-provider";
@@ -59,59 +58,51 @@ export function DetailsQuickActions({ item }: DetailsQuickActionsProps) {
   };
 
   return (
-    <Card className="space-y-5 border border-white/8 bg-[linear-gradient(180deg,rgba(18,27,43,0.92),rgba(10,14,24,0.98))]">
-      <div className="space-y-2">
-        <p className="text-xs uppercase tracking-[0.28em] text-accent-secondary">
-          Quick Actions
-        </p>
-        <h2 className="text-2xl font-semibold tracking-[-0.03em] text-white">
-          Keep this title moving
-        </h2>
-      </div>
+    <Card className="space-y-4 rounded-2xl border border-[#8b5cf6]/24 bg-[linear-gradient(135deg,rgba(26,26,46,0.62),rgba(22,22,42,0.62))] p-6 shadow-[0_22px_70px_rgba(3,7,18,0.24)]">
+      <h2 className="section-subtitle">Quick Actions</h2>
       {error ? (
         <StatusMessage tone="error" title="Action failed">
           {error}
         </StatusMessage>
       ) : null}
-      <div className="grid gap-3 sm:grid-cols-3">
-        <Button
-          variant="secondary"
-          className="h-12 w-full rounded-2xl px-5"
-          leftIcon={
-            pendingAction === "completed" ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              <CheckCircle2 className="h-4 w-4" />
-            )
-          }
+      <div className="space-y-3">
+        <button
+          type="button"
+          className="flex h-12 w-full items-center gap-3 rounded-xl border border-[#8b5cf6]/45 bg-[#8b5cf6]/22 px-4 text-sm font-bold text-[#c4b5fd] transition hover:bg-[#8b5cf6]/30 disabled:opacity-55"
           onClick={markCompleted}
           disabled={isPending}
         >
-          {pendingAction === "completed" ? "Updating" : "Mark as Completed"}
-        </Button>
-        <Button
-          variant="secondary"
-          className="h-12 w-full rounded-2xl px-5"
-          leftIcon={
-            pendingAction === "favorite" ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              <Heart className={isFavorite ? "h-4 w-4 fill-current" : "h-4 w-4"} />
-            )
-          }
+          {pendingAction === "completed" ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            <Check className="h-4 w-4" />
+          )}
+          <span>{pendingAction === "completed" ? "Updating" : "Mark as Completed"}</span>
+        </button>
+        <button
+          type="button"
+          className="flex h-12 w-full items-center gap-3 rounded-xl border border-[#8b5cf6]/24 bg-transparent px-4 text-sm font-bold text-[#b8c1ec] transition hover:bg-white/5 disabled:opacity-55"
           onClick={toggleFavorite}
           disabled={isPending}
         >
-          {pendingAction === "favorite"
-            ? "Updating"
-            : isFavorite
-              ? "Remove Favorite"
-              : "Add to Favorites"}
-        </Button>
+          {pendingAction === "favorite" ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            <Heart className={isFavorite ? "h-4 w-4 fill-current" : "h-4 w-4"} />
+          )}
+          <span>
+            {pendingAction === "favorite"
+              ? "Updating"
+              : isFavorite
+                ? "Remove Favorite"
+                : "Add to Favorites"}
+          </span>
+        </button>
         <Link href="/library">
-          <Button variant="secondary" className="h-12 w-full rounded-2xl px-5" leftIcon={<SquarePen className="h-4 w-4" />}>
-            Edit in Library
-          </Button>
+          <span className="flex h-12 w-full items-center gap-3 rounded-xl border border-[#8b5cf6]/24 bg-transparent px-4 text-sm font-bold text-[#b8c1ec] transition hover:bg-white/5">
+            <SquarePen className="h-4 w-4" />
+            Edit Review
+          </span>
         </Link>
       </div>
     </Card>

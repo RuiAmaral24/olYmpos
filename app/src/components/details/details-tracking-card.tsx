@@ -1,4 +1,4 @@
-import { RefreshCcw, Star } from "lucide-react";
+import { Play, Plus, Star, TrendingUp } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -13,46 +13,53 @@ type DetailsTrackingCardProps = {
 export function DetailsTrackingCard({ item }: DetailsTrackingCardProps) {
   const progressPercent = getProgressPercent(item);
   const completedAction = markLibraryItemCompleted.bind(null, item.id);
+  const trackingDetails = getTrackingDetails(item) || "Not started";
 
   return (
-    <Card className="space-y-6 border border-white/8 bg-[linear-gradient(180deg,rgba(19,28,44,0.92),rgba(9,14,24,0.98))]">
-      <div className="space-y-2">
-        <p className="text-xs uppercase tracking-[0.28em] text-accent-secondary">
-          Your Tracking
-        </p>
-        <h2 className="text-2xl font-semibold tracking-[-0.03em] text-white">
-          Keep your universe in motion
-        </h2>
+    <Card className="space-y-6 rounded-2xl border border-[#8b5cf6]/24 bg-[linear-gradient(135deg,rgba(26,26,46,0.62),rgba(22,22,42,0.62))] p-8 shadow-[0_22px_70px_rgba(3,7,18,0.26)]">
+      <div className="flex items-center gap-3 text-[#9a72ff]">
+        <TrendingUp className="h-6 w-6" />
+        <h2 className="section-subtitle">Your Tracking</h2>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-3">
-        <div className="rounded-[1.5rem] border border-white/8 bg-white/4 p-4">
-          <p className="text-xs uppercase tracking-[0.2em] text-[#92a2be] sm:tracking-[0.24em]">Current Status</p>
-          <p className="mt-3 text-lg font-semibold text-white">{getStatusLabel(item.status)}</p>
-        </div>
-        <div className="rounded-[1.5rem] border border-white/8 bg-white/4 p-4">
-          <p className="text-xs uppercase tracking-[0.2em] text-[#92a2be] sm:tracking-[0.24em]">User Rating</p>
-          <div className="mt-3 flex items-center gap-2 text-lg font-semibold text-white">
-            <Star className="h-4 w-4 fill-current text-[#f4d58d]" />
-            <span>{item.userRating.toFixed(1)}</span>
+      <div className="grid gap-6 sm:grid-cols-2">
+        <div>
+          <p className="mb-2 text-sm font-semibold text-[#b8c1ec]">Status</p>
+          <div className="flex h-12 items-center gap-3 rounded-xl border border-[#8b5cf6]/45 bg-[#8b5cf6]/22 px-4 text-[#c4b5fd]">
+            <Play className="h-4 w-4" />
+            <span className="font-bold">{getStatusLabel(item.status)}</span>
           </div>
         </div>
-        <div className="rounded-[1.5rem] border border-white/8 bg-white/4 p-4">
-          <p className="text-xs uppercase tracking-[0.2em] text-[#92a2be] sm:tracking-[0.24em]">Progress Details</p>
-          <p className="mt-3 text-lg font-semibold text-white">{getTrackingDetails(item) || "Not started"}</p>
+        <div>
+          <p className="mb-2 text-sm font-semibold text-[#b8c1ec]">Your Rating</p>
+          <div className="flex h-12 items-center gap-2 rounded-xl border border-[#8b5cf6]/24 bg-[#1a1a2e]/80 px-4">
+            {Array.from({ length: 5 }, (_, index) => (
+              <Star
+                key={index}
+                className={index < Math.round(item.userRating / 2) ? "h-5 w-5 fill-[#fbbf24] text-[#fbbf24]" : "h-5 w-5 text-[#4b5563]"}
+              />
+            ))}
+            <span className="ml-2 font-bold text-[#f0f4ff]">
+              {Math.round(item.userRating)}/10
+            </span>
+          </div>
         </div>
       </div>
 
-      <div className="space-y-3">
-        <div className="flex items-center justify-between gap-3 text-sm">
-          <span className="text-[#d7def0]">Progress</span>
-          <span className="text-[#9aabc5]">{progressPercent}%</span>
+      <div className="space-y-2">
+        <div className="flex items-center justify-between gap-4">
+          <p className="text-sm font-semibold text-[#b8c1ec]">Progress</p>
+          <p className="text-sm font-bold text-[#9a72ff]">{trackingDetails}</p>
         </div>
-        <div className="h-3 overflow-hidden rounded-full bg-white/8">
+        <div className="h-3 overflow-hidden rounded-full bg-[#1a1a2e]">
           <div
-            className="h-full rounded-full bg-[linear-gradient(90deg,var(--accent),var(--accent-secondary))]"
+            className="h-full rounded-full bg-[linear-gradient(90deg,#8b5cf6,#6366f1)]"
             style={{ width: `${progressPercent}%` }}
           />
+        </div>
+        <div className="flex items-center justify-between text-xs">
+          <span className="text-[#b8c1ec]">Started: January 15, 2024</span>
+          <span className="font-semibold text-[#9a72ff]">{progressPercent}% Complete</span>
         </div>
       </div>
 
@@ -60,8 +67,8 @@ export function DetailsTrackingCard({ item }: DetailsTrackingCardProps) {
         <Button
           type="submit"
           variant="secondary"
-          className="h-12 rounded-2xl px-5 sm:w-fit"
-          leftIcon={<RefreshCcw className="h-4 w-4" />}
+          className="h-12 w-full rounded-xl border-[#f3f0ff] bg-transparent px-5 text-[#c4b5fd] hover:bg-[#8b5cf6]/10"
+          leftIcon={<Plus className="h-4 w-4" />}
         >
           Update Progress
         </Button>

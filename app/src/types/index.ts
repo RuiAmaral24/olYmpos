@@ -155,6 +155,7 @@ export type DashboardReview = {
   category: MediaCategory;
   excerpt: string;
   rating: number;
+  dateLabel?: string;
 };
 
 export type DetailsMetadataItem = {

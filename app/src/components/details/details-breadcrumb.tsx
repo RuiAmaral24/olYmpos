@@ -11,14 +11,14 @@ export function DetailsBreadcrumb({
   title,
 }: DetailsBreadcrumbProps) {
   return (
-    <div className="flex flex-wrap items-center gap-2 text-sm text-[#95a4bf]">
-      <Link href="/library" className="transition hover:text-white">
+    <div className="flex flex-wrap items-center gap-2 text-sm font-semibold text-[#9a8cff]">
+      <Link href="/library" className="transition hover:text-[#c4b5fd]">
         Library
       </Link>
-      <ChevronRight className="h-4 w-4" />
-      <span>{category}</span>
-      <ChevronRight className="h-4 w-4" />
-      <span className="text-[#dce4f3]">{title}</span>
+      <ChevronRight className="h-4 w-4 text-[#6b7280]" />
+      <span className="text-[#9a8cff]">{category}</span>
+      <ChevronRight className="h-4 w-4 text-[#6b7280]" />
+      <span className="text-[#b8c1ec]">{title}</span>
     </div>
   );
 }

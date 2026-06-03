@@ -14,11 +14,14 @@ type DashboardMediaCardProps = {
 export function DashboardMediaCard({ item }: DashboardMediaCardProps) {
   const coverUrl = item.coverUrl ?? getDashboardArtwork(item.category);
   const rating = item.rating ?? 5;
+  const progressText = item.progressLabel && item.progressLabel !== getCategoryLabel(item.category)
+    ? item.progressLabel
+    : "";
 
   return (
     <Link href={`/details/${item.id}`} className="group block h-full">
-      <Card className="h-full overflow-hidden rounded-2xl border border-[#2d2454] bg-[linear-gradient(135deg,rgba(17,18,34,0.94),rgba(12,13,25,0.98))] p-0 shadow-[0_24px_80px_rgba(3,7,18,0.34)] transition duration-300 group-hover:-translate-y-1 group-hover:border-[#8b5cf6]/45">
-        <div className="relative h-64 overflow-hidden sm:h-72">
+      <Card className="h-full overflow-hidden rounded-2xl border border-[#2d2454] bg-[linear-gradient(135deg,rgba(18,18,35,0.96),rgba(13,13,27,0.99))] p-0 shadow-[0_24px_80px_rgba(3,7,18,0.34)] transition duration-300 group-hover:-translate-y-1 group-hover:border-[#8b5cf6]/45">
+        <div className="relative h-64 overflow-hidden sm:h-72 lg:h-[18.5rem]">
           <div
             className="absolute inset-0 bg-cover bg-center transition duration-500 group-hover:scale-110"
             style={{ backgroundImage: `url("${coverUrl}")` }}
@@ -42,7 +45,9 @@ export function DashboardMediaCard({ item }: DashboardMediaCardProps) {
           <p className="text-sm font-medium text-[#a78bfa]">
             {getCategoryLabel(item.category)}
           </p>
-          <p className="text-sm text-[#c7bee4]">{item.progressLabel || item.status}</p>
+          {progressText ? (
+            <p className="text-sm text-[#c7bee4]">{progressText}</p>
+          ) : null}
         </div>
       </Card>
     </Link>

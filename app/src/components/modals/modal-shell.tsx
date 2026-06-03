@@ -2,15 +2,13 @@
 
 import type { ReactNode } from "react";
 import { useEffect } from "react";
-import { X } from "lucide-react";
+import { Sparkles, X } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
 type ModalShellProps = {
   open: boolean;
   onClose: () => void;
-  title: string;
-  subtitle: string;
   children: ReactNode;
   className?: string;
 };
@@ -18,8 +16,6 @@ type ModalShellProps = {
 export function ModalShell({
   open,
   onClose,
-  title,
-  subtitle,
   children,
   className,
 }: ModalShellProps) {
@@ -50,7 +46,7 @@ export function ModalShell({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center p-0 sm:items-center sm:p-6">
+    <div className="fixed inset-0 z-50 flex items-end justify-center p-0 sm:items-stretch">
       <button
         type="button"
         aria-label="Close modal"
@@ -59,35 +55,30 @@ export function ModalShell({
       />
       <div
         className={cn(
-          "relative z-10 w-full max-w-4xl overflow-hidden rounded-t-[1.75rem] border border-white/10 bg-[linear-gradient(180deg,rgba(17,24,39,0.98),rgba(8,12,22,0.99))] shadow-[0_32px_120px_rgba(0,0,0,0.56)] sm:rounded-[2rem]",
+          "relative z-10 flex h-full w-full max-w-[720px] flex-col overflow-hidden border border-[#382760] bg-[linear-gradient(180deg,rgba(31,28,60,0.99),rgba(24,24,49,0.99)_48%,rgba(17,18,34,0.99))] shadow-[0_32px_120px_rgba(0,0,0,0.62)]",
           className,
         )}
       >
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(124,108,255,0.2),transparent_28%),radial-gradient(circle_at_82%_18%,rgba(78,161,255,0.14),transparent_22%)]" />
-        <div className="relative border-b border-white/8 px-5 py-5 sm:px-8">
-          <div className="flex items-start justify-between gap-4">
-            <div className="min-w-0 space-y-2">
-              <p className="text-xs uppercase tracking-[0.22em] text-accent-secondary sm:tracking-[0.28em]">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(139,92,246,0.2),transparent_34%),radial-gradient(circle_at_82%_18%,rgba(99,102,241,0.12),transparent_26%)]" />
+        <div className="relative border-b border-[#33275a] px-5 py-5 sm:px-[58px]">
+          <div className="flex items-center justify-between gap-4">
+            <div className="relative min-w-0">
+              <Sparkles className="absolute -left-4 top-1/2 h-14 w-14 -translate-y-1/2 text-[#8b5cf6] opacity-[0.1]" />
+              <h2 className="editorial-title bg-[linear-gradient(135deg,#ffffff,#efe8ff,#d8caff)] bg-clip-text text-5xl font-normal leading-none tracking-[0] text-transparent sm:text-6xl">
                 Entry Editor
-              </p>
-              <h2 className="text-2xl font-semibold tracking-[-0.04em] text-white sm:text-3xl">
-                {title}
               </h2>
-              <p className="max-w-2xl text-sm leading-6 text-[#aeb8cf]">
-                {subtitle}
-              </p>
             </div>
             <button
               type="button"
               aria-label="Close modal"
-              className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/6 text-muted-foreground transition hover:text-white sm:h-11 sm:w-11"
+              className="inline-flex h-15 w-15 shrink-0 items-center justify-center text-muted-foreground transition hover:text-white sm:h-5 sm:w-9"
               onClick={onClose}
             >
               <X className="h-4 w-4" />
             </button>
           </div>
         </div>
-        <div className="soft-scrollbar relative max-h-[calc(100vh-7rem)] overflow-y-auto px-5 py-5 sm:max-h-[calc(100vh-9rem)] sm:px-8 sm:py-8">
+        <div className="soft-scrollbar relative flex-1 overflow-y-auto px-5 py-5 sm:px-8 sm:py-7">
           {children}
         </div>
       </div>

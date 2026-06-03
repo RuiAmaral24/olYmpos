@@ -46,7 +46,7 @@ export function AppHeader({ user }: AppHeaderProps) {
         </Link>
 
         <div className="hidden min-w-0 flex-1 justify-center md:flex">
-          <div className="relative w-full max-w-[320px]">
+          <div className="relative w-full max-w-[360px] translate-x-6 lg:max-w-[420px] lg:translate-x-24 xl:translate-x-68">
             <Search className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-[#8b5cf6]/70" />
             <input
               aria-label="Search"

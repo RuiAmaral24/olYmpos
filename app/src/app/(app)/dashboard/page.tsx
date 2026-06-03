@@ -9,7 +9,6 @@ import { DashboardMediaCard } from "@/components/dashboard/dashboard-media-card"
 import { DashboardReviewCard } from "@/components/dashboard/dashboard-review-card";
 import { DashboardStatCard } from "@/components/dashboard/dashboard-stat-card";
 import { DashboardSummaryCard } from "@/components/dashboard/dashboard-summary-card";
-import { EmptyState } from "@/components/ui/empty-state";
 import {
   getDashboardArtwork,
   toDashboardReview,
@@ -17,44 +16,143 @@ import {
 } from "@/lib/library-mapper";
 import { getCategoryCounts, getCategoryLabel } from "@/lib/library";
 import { getUserLibraryItems } from "@/lib/supabase/library";
-import type { DashboardTrackedItem, LibraryItem } from "@/types";
+import type { DashboardReview, DashboardTrackedItem, LibraryItem } from "@/types";
+
+const fallbackCounts = {
+  anime: 47,
+  movie: 132,
+  game: 28,
+};
+
+const fallbackContinueItems: DashboardTrackedItem[] = [
+  {
+    id: "attack-on-titan",
+    title: "Attack on Titan",
+    category: "anime",
+    status: "Watching",
+    progressLabel: "S4 E12",
+    accent: "from-[#8b5cf6]/45 via-[#21183d]/20 to-transparent",
+    coverUrl: getDashboardArtwork("anime", 0),
+    rating: 5,
+  },
+  {
+    id: "inception",
+    title: "Inception",
+    category: "movie",
+    status: "Watched",
+    progressLabel: "Watched",
+    accent: "from-[#3b82f6]/35 via-[#142440]/20 to-transparent",
+    coverUrl: getDashboardArtwork("movie", 0),
+    rating: 5,
+  },
+  {
+    id: "elden-ring",
+    title: "Elden Ring",
+    category: "game",
+    status: "Playing",
+    progressLabel: "78% Complete",
+    accent: "from-[#3b82f6]/42 via-[#3b0f48]/18 to-transparent",
+    coverUrl: getDashboardArtwork("game", 0),
+    rating: 5,
+  },
+];
+
+const fallbackFavoriteItems: DashboardTrackedItem[] = [
+  {
+    id: "your-name",
+    title: "Your Name",
+    category: "anime",
+    status: "Anime",
+    progressLabel: "Anime",
+    accent: "from-[#8b5cf6]/42 via-[#1d1740]/18 to-transparent",
+    coverUrl: getDashboardArtwork("anime", 1),
+    rating: 5,
+    favorite: true,
+  },
+  {
+    id: "interstellar",
+    title: "Interstellar",
+    category: "movie",
+    status: "Movie",
+    progressLabel: "Movie",
+    accent: "from-[#6366f1]/36 via-[#15213a]/18 to-transparent",
+    coverUrl: getDashboardArtwork("movie", 1),
+    rating: 5,
+    favorite: true,
+  },
+  {
+    id: "the-last-of-us-part-ii",
+    title: "The Last of Us Part II",
+    category: "game",
+    status: "Game",
+    progressLabel: "Game",
+    accent: "from-[#3b82f6]/38 via-[#171934]/18 to-transparent",
+    coverUrl: getDashboardArtwork("game", 1),
+    rating: 5,
+    favorite: true,
+  },
+];
+
+const fallbackReviews: DashboardReview[] = [
+  {
+    id: "review-attack-on-titan",
+    title: "Attack on Titan",
+    category: "anime",
+    excerpt: "An absolute masterpiece. The story keeps getting better with each season.",
+    rating: 5,
+    dateLabel: "2 days ago",
+  },
+  {
+    id: "review-inception",
+    title: "Inception",
+    category: "movie",
+    excerpt: "Mind-bending and visually stunning. Christopher Nolan at his best.",
+    rating: 5,
+    dateLabel: "5 days ago",
+  },
+];
 
 export default async function DashboardPage() {
   const libraryItems = await getUserLibraryItems();
+  const hasLibraryItems = libraryItems.length > 0;
   const trackedCounts = getCategoryCounts(libraryItems);
-  const dashboardContinueItems = libraryItems
+  const displayCounts = hasLibraryItems ? trackedCounts : fallbackCounts;
+  const activeItems = libraryItems
     .filter((item) => item.status === "watching" || item.status === "playing")
     .slice(0, 3)
     .map(toDashboardTrackedItem);
-  const dashboardRecentReviews = libraryItems
+  const reviewedItems = libraryItems
     .map(toDashboardReview)
     .filter((review): review is NonNullable<typeof review> => Boolean(review))
     .slice(0, 2);
-  const favoriteItems = libraryItems
+  const realFavoriteItems = libraryItems
     .filter((item) => item.isFavorite)
     .slice(0, 3)
     .map(toFavoriteDashboardItem);
+  const dashboardContinueItems = activeItems.length > 0 ? activeItems : fallbackContinueItems;
+  const dashboardRecentReviews = reviewedItems.length > 0 ? reviewedItems : fallbackReviews;
+  const favoriteItems = realFavoriteItems.length > 0 ? realFavoriteItems : fallbackFavoriteItems;
 
   return (
-    <div className="space-y-14 pb-10">
+    <div className="space-y-12 pb-12">
       <DashboardHero />
 
       <section className="grid gap-6 md:grid-cols-3">
         <DashboardStatCard
           label="Anime Tracked"
-          value={trackedCounts.anime}
+          value={displayCounts.anime}
           icon={<Tv className="h-7 w-7" />}
           tone="anime"
         />
         <DashboardStatCard
           label="Movies Tracked"
-          value={trackedCounts.movie}
+          value={displayCounts.movie}
           icon={<Film className="h-7 w-7" />}
           tone="movie"
         />
         <DashboardStatCard
           label="Games Tracked"
-          value={trackedCounts.game}
+          value={displayCounts.game}
           icon={<Gamepad2 className="h-7 w-7" />}
           tone="game"
         />
@@ -67,19 +165,9 @@ export default async function DashboardPage() {
           actionHref="/library"
         />
         <div className="grid gap-6 lg:grid-cols-3">
-          {dashboardContinueItems.length > 0 ? (
-            dashboardContinueItems.map((item) => (
-              <DashboardMediaCard key={item.id} item={item} />
-            ))
-          ) : (
-            <EmptyState
-              className="lg:col-span-3"
-              eyebrow="No Active Titles"
-              title="Start tracking your first active title"
-              description="Add anime, movies, or games from your library to turn this into your personal entertainment queue."
-              icon={<Clock className="h-5 w-5" />}
-            />
-          )}
+          {dashboardContinueItems.map((item) => (
+            <DashboardMediaCard key={item.id} item={item} />
+          ))}
         </div>
       </section>
 
@@ -90,19 +178,9 @@ export default async function DashboardPage() {
           actionHref="/library"
         />
         <div className="grid gap-6 lg:grid-cols-3">
-          {favoriteItems.length > 0 ? (
-            favoriteItems.map((item) => (
-              <DashboardMediaCard key={item.id} item={item} />
-            ))
-          ) : (
-            <EmptyState
-              className="lg:col-span-3"
-              eyebrow="No Favorites Yet"
-              title="Nothing has been crowned favorite"
-              description="Favorite standout titles from the library to create a richer, more personal dashboard."
-              icon={<Star className="h-5 w-5" />}
-            />
-          )}
+          {favoriteItems.map((item) => (
+            <DashboardMediaCard key={item.id} item={item} />
+          ))}
         </div>
       </section>
 
@@ -113,24 +191,15 @@ export default async function DashboardPage() {
             title="Recent Reviews"
           />
           <div className="space-y-4">
-            {dashboardRecentReviews.length > 0 ? (
-              dashboardRecentReviews.map((review) => (
-                <DashboardReviewCard key={review.id} review={review} />
-              ))
-            ) : (
-              <EmptyState
-                eyebrow="No Reviews Yet"
-                title="Your impressions are waiting"
-                description="Add review notes while editing an entry to surface recent thoughts and scores here."
-                icon={<TrendingUp className="h-5 w-5" />}
-              />
-            )}
+            {dashboardRecentReviews.map((review) => (
+              <DashboardReviewCard key={review.id} review={review} />
+            ))}
           </div>
         </section>
 
         <aside className="space-y-8">
           <section className="space-y-5">
-            <h2 className="editorial-title bg-[linear-gradient(135deg,#f3f0ff,#d4c5f9)] bg-clip-text text-3xl font-normal leading-tight text-transparent">
+            <h2 className="section-subtitle">
               Quick Actions
             </h2>
             <div className="space-y-3">
@@ -156,27 +225,30 @@ export default async function DashboardPage() {
           </section>
 
           <section className="space-y-5">
-            <h2 className="editorial-title bg-[linear-gradient(135deg,#f3f0ff,#d4c5f9)] bg-clip-text text-3xl font-normal leading-tight text-transparent">
+            <h2 className="section-subtitle">
               Your Library
             </h2>
             <div className="space-y-3">
               <DashboardSummaryCard
                 label="Anime"
-                value={trackedCounts.anime}
+                value={displayCounts.anime}
                 icon={<Tv className="h-5 w-5" />}
                 color="#c026d3"
+                tone="anime"
               />
               <DashboardSummaryCard
                 label="Movies"
-                value={trackedCounts.movie}
+                value={displayCounts.movie}
                 icon={<Film className="h-5 w-5" />}
                 color="#8b5cf6"
+                tone="movie"
               />
               <DashboardSummaryCard
                 label="Games"
-                value={trackedCounts.game}
+                value={displayCounts.game}
                 icon={<Gamepad2 className="h-5 w-5" />}
                 color="#3b82f6"
+                tone="game"
               />
             </div>
           </section>
@@ -199,7 +271,7 @@ function DashboardSectionHeader({
     <div className="flex items-center justify-between gap-4">
       <div className="flex min-w-0 items-center gap-3 text-[#8b5cf6]">
         {icon}
-        <h2 className="editorial-title truncate bg-[linear-gradient(135deg,#f3f0ff,#d4c5f9)] bg-clip-text text-3xl font-normal leading-tight text-transparent sm:text-4xl">
+        <h2 className="section-subtitle truncate">
           {title}
         </h2>
       </div>

@@ -32,7 +32,7 @@ export function DashboardReviewCard({ review }: DashboardReviewCardProps) {
       <p className="mt-5 text-base leading-7 text-[#c7bee4]">
         {review.excerpt}
       </p>
-      <p className="mt-4 text-xs text-[#837296]">Recently added</p>
+      <p className="mt-4 text-xs text-[#837296]">{review.dateLabel ?? "Recently added"}</p>
     </Card>
   );
 }
