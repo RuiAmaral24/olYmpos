@@ -7,10 +7,12 @@ import { Check, Heart, Loader2, SquarePen } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { StatusMessage } from "@/components/ui/status-message";
 import { useToast } from "@/components/ui/toast-provider";
+import { getCategoryTone } from "@/lib/category-tones";
 import {
   markLibraryItemCompleted,
   toggleLibraryItemFavorite,
 } from "@/lib/supabase/actions";
+import { cn } from "@/lib/utils";
 import type { DetailedLibraryItem } from "@/types";
 
 type DetailsQuickActionsProps = {
@@ -23,6 +25,7 @@ export function DetailsQuickActions({ item }: DetailsQuickActionsProps) {
   const [pendingAction, setPendingAction] = useState<"completed" | "favorite" | null>(null);
   const [isPending, startTransition] = useTransition();
   const { showToast } = useToast();
+  const tone = getCategoryTone(item.category);
 
   const markCompleted = () => {
     setError(null);
@@ -58,7 +61,7 @@ export function DetailsQuickActions({ item }: DetailsQuickActionsProps) {
   };
 
   return (
-    <Card className="space-y-4 rounded-2xl border border-[#8b5cf6]/24 bg-[linear-gradient(135deg,rgba(26,26,46,0.62),rgba(22,22,42,0.62))] p-6 shadow-[0_22px_70px_rgba(3,7,18,0.24)]">
+    <Card className={cn("space-y-4 rounded-2xl p-6", tone.panel)}>
       <h2 className="section-subtitle">Quick Actions</h2>
       {error ? (
         <StatusMessage tone="error" title="Action failed">
@@ -68,7 +71,7 @@ export function DetailsQuickActions({ item }: DetailsQuickActionsProps) {
       <div className="space-y-3">
         <button
           type="button"
-          className="flex h-12 w-full items-center gap-3 rounded-xl border border-[#8b5cf6]/45 bg-[#8b5cf6]/22 px-4 text-sm font-bold text-[#c4b5fd] transition hover:bg-[#8b5cf6]/30 disabled:opacity-55"
+          className={cn("flex h-12 w-full items-center gap-3 rounded-xl border px-4 text-sm font-bold transition hover:bg-white/10 disabled:opacity-55", tone.badge)}
           onClick={markCompleted}
           disabled={isPending}
         >
@@ -81,7 +84,7 @@ export function DetailsQuickActions({ item }: DetailsQuickActionsProps) {
         </button>
         <button
           type="button"
-          className="flex h-12 w-full items-center gap-3 rounded-xl border border-[#8b5cf6]/24 bg-transparent px-4 text-sm font-bold text-[#b8c1ec] transition hover:bg-white/5 disabled:opacity-55"
+          className={cn("flex h-12 w-full items-center gap-3 rounded-xl border bg-transparent px-4 text-sm font-bold text-[#b8c1ec] transition hover:bg-white/5 disabled:opacity-55", tone.border)}
           onClick={toggleFavorite}
           disabled={isPending}
         >
@@ -99,7 +102,7 @@ export function DetailsQuickActions({ item }: DetailsQuickActionsProps) {
           </span>
         </button>
         <Link href="/library">
-          <span className="flex h-12 w-full items-center gap-3 rounded-xl border border-[#8b5cf6]/24 bg-transparent px-4 text-sm font-bold text-[#b8c1ec] transition hover:bg-white/5">
+          <span className={cn("flex h-12 w-full items-center gap-3 rounded-xl border bg-transparent px-4 text-sm font-bold text-[#b8c1ec] transition hover:bg-white/5", tone.border)}>
             <SquarePen className="h-4 w-4" />
             Edit Review
           </span>

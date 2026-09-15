@@ -141,7 +141,8 @@ export function getDisplayMetadata(item: LibraryItem): DetailsMetadataItem[] {
       { label: "Episodes", value: String(item.metadata.totalEpisodes) },
       { label: "Seasons", value: String(item.metadata.totalSeasons) },
       { label: "Studio", value: item.metadata.studio },
-      { label: "Release", value: item.metadata.releaseDate },
+      { label: "Aired", value: item.metadata.releaseDate },
+      { label: "Duration", value: "24 min per ep" },
     ];
   }
 
@@ -151,6 +152,7 @@ export function getDisplayMetadata(item: LibraryItem): DetailsMetadataItem[] {
       { label: "Director", value: item.metadata.director },
       { label: "Release Date", value: item.metadata.releaseDate },
       { label: "Format", value: item.metadata.format },
+      { label: "Watched", value: `${item.metadata.watchedCount} time${item.metadata.watchedCount === 1 ? "" : "s"}` },
     ];
   }
 

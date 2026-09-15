@@ -12,15 +12,13 @@ import {
   Tv,
 } from "lucide-react";
 
-import {
-  LibraryItemCard,
-  type ShowcaseLibraryItem,
-} from "@/components/library/library-item-card";
+import { LibraryItemCard } from "@/components/library/library-item-card";
 import { EntryModal } from "@/components/modals/entry-modal";
 import { Button } from "@/components/ui/button";
 import { StatusMessage } from "@/components/ui/status-message";
 import { useToast } from "@/components/ui/toast-provider";
-import { getCategoryLabel, getStatusLabel } from "@/lib/library";
+import { showcaseLibraryItems } from "@/data/showcase-library";
+import { getStatusLabel } from "@/lib/library";
 import { cn } from "@/lib/utils";
 import {
   deleteLibraryItem,
@@ -64,157 +62,6 @@ const sortOptions: SortOption[] = [
   "Recently Added",
   "Highest Rated",
   "Alphabetical",
-];
-
-const showcaseItems: ShowcaseLibraryItem[] = [
-  {
-    id: "showcase-attack-on-titan",
-    title: "Attack on Titan",
-    category: "anime",
-    status: "watching",
-    rating: 5,
-    isFavorite: true,
-    coverUrl:
-      "https://images.unsplash.com/photo-1764520408437-95890a95db4d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixlib=rb-4.1.0&q=80&w=1080",
-    coverAccent: "from-[#8b5cf6] via-[#2a2248] to-[#0b1020]",
-    progressLabel: "S4 E12",
-    isShowcase: true,
-  },
-  {
-    id: "showcase-inception",
-    title: "Inception",
-    category: "movie",
-    status: "completed",
-    rating: 5,
-    isFavorite: true,
-    coverUrl:
-      "https://images.unsplash.com/photo-1563202221-f4eae97e4828?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixlib=rb-4.1.0&q=80&w=1080",
-    coverAccent: "from-[#4ea1ff] via-[#16304d] to-[#09111f]",
-    isShowcase: true,
-  },
-  {
-    id: "showcase-elden-ring",
-    title: "Elden Ring",
-    category: "game",
-    status: "playing",
-    rating: 5,
-    isFavorite: false,
-    coverUrl:
-      "https://images.unsplash.com/photo-1634658340808-9abaef7eb9a7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixlib=rb-4.1.0&q=80&w=1080",
-    coverAccent: "from-[#f59e0b] via-[#4b2c0c] to-[#110d0a]",
-    progressLabel: "78%",
-    isShowcase: true,
-  },
-  {
-    id: "showcase-your-name",
-    title: "Your Name",
-    category: "anime",
-    status: "completed",
-    rating: 5,
-    isFavorite: true,
-    coverUrl:
-      "https://images.unsplash.com/photo-1763732397784-c5ff2651d40c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixlib=rb-4.1.0&q=80&w=1080",
-    coverAccent: "from-[#c026d3] via-[#41172e] to-[#0f0b16]",
-    isShowcase: true,
-  },
-  {
-    id: "showcase-interstellar",
-    title: "Interstellar",
-    category: "movie",
-    status: "completed",
-    rating: 5,
-    isFavorite: true,
-    coverUrl:
-      "https://images.unsplash.com/photo-1765510296004-614b6cc204da?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixlib=rb-4.1.0&q=80&w=1080",
-    coverAccent: "from-[#7c3aed] via-[#1f1b45] to-[#090b14]",
-    isShowcase: true,
-  },
-  {
-    id: "showcase-last-of-us",
-    title: "The Last of Us Part II",
-    category: "game",
-    status: "completed",
-    rating: 5,
-    isFavorite: true,
-    coverUrl:
-      "https://images.unsplash.com/photo-1592840496694-26d035b52b48?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixlib=rb-4.1.0&q=80&w=1080",
-    coverAccent: "from-[#22c55e] via-[#163727] to-[#08110d]",
-    isShowcase: true,
-  },
-  {
-    id: "showcase-demon-slayer",
-    title: "Demon Slayer",
-    category: "anime",
-    status: "watching",
-    rating: 4,
-    isFavorite: false,
-    coverUrl:
-      "https://images.unsplash.com/photo-1612036781124-847f8939b154?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixlib=rb-4.1.0&q=80&w=1080",
-    coverAccent: "from-[#ef4444] via-[#41172e] to-[#0f0b16]",
-    progressLabel: "S2 E8",
-    isShowcase: true,
-  },
-  {
-    id: "showcase-matrix",
-    title: "The Matrix",
-    category: "movie",
-    status: "completed",
-    rating: 5,
-    isFavorite: false,
-    coverUrl:
-      "https://images.unsplash.com/photo-1536440136628-849c177e76a1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixlib=rb-4.1.0&q=80&w=1080",
-    coverAccent: "from-[#06b6d4] via-[#15314a] to-[#09111d]",
-    isShowcase: true,
-  },
-  {
-    id: "showcase-god-of-war",
-    title: "God of War",
-    category: "game",
-    status: "playing",
-    rating: 5,
-    isFavorite: true,
-    coverUrl:
-      "https://images.unsplash.com/photo-1542751371-adc38448a05e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixlib=rb-4.1.0&q=80&w=1080",
-    coverAccent: "from-[#3b82f6] via-[#15294b] to-[#08101d]",
-    progressLabel: "45%",
-    isShowcase: true,
-  },
-  {
-    id: "showcase-cowboy-bebop",
-    title: "Cowboy Bebop",
-    category: "anime",
-    status: "planned",
-    rating: 0,
-    isFavorite: false,
-    coverUrl:
-      "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixlib=rb-4.1.0&q=80&w=1080",
-    coverAccent: "from-[#60a5fa] via-[#15294b] to-[#08101d]",
-    isShowcase: true,
-  },
-  {
-    id: "showcase-dune",
-    title: "Dune",
-    category: "movie",
-    status: "planned",
-    rating: 0,
-    isFavorite: false,
-    coverUrl:
-      "https://images.unsplash.com/photo-1509347528160-9a9e33742cdb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixlib=rb-4.1.0&q=80&w=1080",
-    coverAccent: "from-[#f97316] via-[#4a2618] to-[#120d0b]",
-    isShowcase: true,
-  },
-  {
-    id: "showcase-hades",
-    title: "Hades",
-    category: "game",
-    status: "completed",
-    rating: 5,
-    isFavorite: true,
-    coverUrl:
-      "https://images.unsplash.com/photo-1538481199705-c710c4e965fc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixlib=rb-4.1.0&q=80&w=1080",
-    coverAccent: "from-[#f59e0b] via-[#4b2c0c] to-[#110d0a]",
-    isShowcase: true,
-  },
 ];
 
 export function LibraryManager({ initialItems }: LibraryManagerProps) {
@@ -276,7 +123,7 @@ export function LibraryManager({ initialItems }: LibraryManagerProps) {
 
   const showcaseVisibleItems = useMemo(
     () =>
-      showcaseItems
+      showcaseLibraryItems
         .filter((item) => {
           if (activeCategory === "All") {
             return true;
