@@ -1,22 +1,23 @@
-import { Calendar, Film, Gamepad2, Heart, ListPlus, Share2, SquarePen, Star, Tv } from "lucide-react";
-import Link from "next/link";
+import { Calendar, Film, Gamepad2, Heart, ListPlus, Share2, Star, Tv } from "lucide-react";
 
+import { DetailsEditEntryButton } from "@/components/details/details-edit-entry-button";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { getCategoryTone } from "@/lib/category-tones";
+import { getDetailsTone } from "@/lib/details-tone";
 import { getCategoryLabel } from "@/lib/library";
 import { cn } from "@/lib/utils";
 import type { DetailedLibraryItem, MediaCategory } from "@/types";
 
 type DetailsHeroCardProps = {
   item: DetailedLibraryItem;
+  persistChanges: boolean;
 };
 
-export function DetailsHeroCard({ item }: DetailsHeroCardProps) {
+export function DetailsHeroCard({ item, persistChanges }: DetailsHeroCardProps) {
   const coverStyle = item.coverUrl
     ? { backgroundImage: `url("${item.coverUrl}")` }
     : undefined;
-  const tone = getCategoryTone(item.category);
+  const tone = getDetailsTone();
 
   return (
     <section className="grid gap-8 lg:grid-cols-[320px_minmax(0,1fr)]">
@@ -79,11 +80,11 @@ export function DetailsHeroCard({ item }: DetailsHeroCardProps) {
         </div>
 
         <div className="flex flex-wrap items-center gap-4">
-          <Link href="/library">
-            <Button className="h-12 rounded-xl px-6" leftIcon={<SquarePen className="h-4 w-4" />}>
-              Edit Entry
-            </Button>
-          </Link>
+          <DetailsEditEntryButton
+            item={item}
+            persistChanges={persistChanges}
+            presentation="hero"
+          />
           <Button variant="secondary" className={cn("h-12 rounded-xl bg-transparent px-6 text-[#b8c1ec]", tone.borderStrong)} leftIcon={<Share2 className="h-4 w-4" />}>
             Share
           </Button>

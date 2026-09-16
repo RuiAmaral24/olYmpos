@@ -11,7 +11,7 @@ import {
   getShowcaseItemById,
   showcaseLibraryItems,
 } from "@/data/showcase-library";
-import { getCategoryTone } from "@/lib/category-tones";
+import { getDetailsTone } from "@/lib/details-tone";
 import { mapDetailedItem } from "@/lib/library-mapper";
 import { getCategoryLabel, getDisplayMetadata } from "@/lib/library";
 import { getUserLibraryItem } from "@/lib/supabase/library";
@@ -58,17 +58,18 @@ function DetailsPageContent({
     .map((relatedId) => items.find((entry) => entry.id === relatedId))
     .filter((entry): entry is NonNullable<typeof entry> => Boolean(entry));
   const similarTitle = `Similar ${getCategoryLabel(item.category)}`;
-  const tone = getCategoryTone(item.category);
+  const tone = getDetailsTone();
+  const persistChanges = !("isShowcase" in item);
 
   return (
     <div className="space-y-8 pb-10">
       <DetailsBreadcrumb category={getCategoryLabel(item.category)} title={item.title} />
 
-      <DetailsHeroCard item={item} />
+      <DetailsHeroCard item={item} persistChanges={persistChanges} />
 
       <div className="grid gap-8 lg:grid-cols-3">
         <div className="space-y-8 lg:col-span-2">
-          <DetailsTrackingCard item={item} />
+          <DetailsTrackingCard item={item} persistChanges={persistChanges} />
 
           <DetailsReviewCard
             review={item.userReview}
@@ -97,9 +98,9 @@ function DetailsPageContent({
         </div>
 
         <aside className="space-y-6 lg:col-span-1">
-          <DetailsMetadataCard category={item.category} metadata={getDisplayMetadata(item)} />
+          <DetailsMetadataCard metadata={getDisplayMetadata(item)} />
           <CommunityStats category={item.category} />
-          <DetailsQuickActions item={item} />
+          <DetailsQuickActions item={item} persistChanges={persistChanges} />
         </aside>
       </div>
     </div>
@@ -107,11 +108,11 @@ function DetailsPageContent({
 }
 
 function CommunityStats({ category }: { category: MediaCategory }) {
-  const tone = getCategoryTone(category);
+  const tone = getDetailsTone();
   const stats = [
     { label: category === "game" ? "Playing" : "Watching", value: "1.2M", className: tone.text },
     { label: "Completed", value: "3.8M", className: "text-[#22c55e]" },
-    { label: category === "game" ? "Queued" : "Plan to Watch", value: "2.1M", className: "text-[#3b82f6]" },
+    { label: category === "game" ? "Queued" : "Plan to Watch", value: "2.1M", className: tone.text },
   ];
 
   return (

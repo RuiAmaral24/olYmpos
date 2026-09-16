@@ -1,13 +1,13 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import Link from "next/link";
-import { Check, Heart, Loader2, SquarePen } from "lucide-react";
+import { Check, Heart, Loader2 } from "lucide-react";
 
+import { DetailsEditEntryButton } from "@/components/details/details-edit-entry-button";
 import { Card } from "@/components/ui/card";
 import { StatusMessage } from "@/components/ui/status-message";
 import { useToast } from "@/components/ui/toast-provider";
-import { getCategoryTone } from "@/lib/category-tones";
+import { getDetailsTone } from "@/lib/details-tone";
 import {
   markLibraryItemCompleted,
   toggleLibraryItemFavorite,
@@ -17,17 +17,24 @@ import type { DetailedLibraryItem } from "@/types";
 
 type DetailsQuickActionsProps = {
   item: DetailedLibraryItem;
+  persistChanges: boolean;
 };
 
-export function DetailsQuickActions({ item }: DetailsQuickActionsProps) {
+export function DetailsQuickActions({ item, persistChanges }: DetailsQuickActionsProps) {
   const [isFavorite, setIsFavorite] = useState(item.isFavorite);
   const [error, setError] = useState<string | null>(null);
   const [pendingAction, setPendingAction] = useState<"completed" | "favorite" | null>(null);
   const [isPending, startTransition] = useTransition();
   const { showToast } = useToast();
-  const tone = getCategoryTone(item.category);
+  const tone = getDetailsTone();
 
   const markCompleted = () => {
+    if (!persistChanges) {
+      setError("Demo items are preview-only. Changes are not saved.");
+      showToast("Demo item changes are not saved.", "error");
+      return;
+    }
+
     setError(null);
     setPendingAction("completed");
     startTransition(async () => {
@@ -45,6 +52,13 @@ export function DetailsQuickActions({ item }: DetailsQuickActionsProps) {
   const toggleFavorite = () => {
     const nextFavorite = !isFavorite;
     setIsFavorite(nextFavorite);
+
+    if (!persistChanges) {
+      setError("Demo items are preview-only. Changes are not saved.");
+      showToast("Demo item changes are not saved.", "error");
+      return;
+    }
+
     setError(null);
     setPendingAction("favorite");
     startTransition(async () => {
@@ -101,12 +115,12 @@ export function DetailsQuickActions({ item }: DetailsQuickActionsProps) {
                 : "Add to Favorites"}
           </span>
         </button>
-        <Link href="/library">
-          <span className={cn("flex h-12 w-full items-center gap-3 rounded-xl border bg-transparent px-4 text-sm font-bold text-[#b8c1ec] transition hover:bg-white/5", tone.border)}>
-            <SquarePen className="h-4 w-4" />
-            Edit Review
-          </span>
-        </Link>
+        <DetailsEditEntryButton
+          item={item}
+          persistChanges={persistChanges}
+          presentation="quick"
+          label="Edit Review"
+        />
       </div>
     </Card>
   );

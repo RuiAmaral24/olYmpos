@@ -1,18 +1,17 @@
 import { Award, Calendar, Clock, Film, Tv } from "lucide-react";
 
 import { Card } from "@/components/ui/card";
-import { getCategoryTone } from "@/lib/category-tones";
+import { getDetailsTone } from "@/lib/details-tone";
 import { cn } from "@/lib/utils";
-import type { DetailsMetadataItem, MediaCategory } from "@/types";
+import type { DetailsMetadataItem } from "@/types";
 
 type DetailsMetadataCardProps = {
-  category: MediaCategory;
   metadata: DetailsMetadataItem[];
 };
 
-export function DetailsMetadataCard({ category, metadata }: DetailsMetadataCardProps) {
+export function DetailsMetadataCard({ metadata }: DetailsMetadataCardProps) {
   const icons = [Tv, Film, Award, Calendar, Clock];
-  const tone = getCategoryTone(category);
+  const tone = getDetailsTone();
 
   return (
     <Card className={cn("space-y-5 rounded-2xl p-6", tone.panel)}>

@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Star } from "lucide-react";
 
 import { Card } from "@/components/ui/card";
-import { getCategoryTone } from "@/lib/category-tones";
+import { getDetailsTone } from "@/lib/details-tone";
 import { cn } from "@/lib/utils";
 import type { LibraryItem } from "@/types";
 
@@ -14,7 +14,7 @@ export function DetailsRelatedCard({ item }: DetailsRelatedCardProps) {
   const coverStyle = item.coverUrl
     ? { backgroundImage: `url("${item.coverUrl}")` }
     : undefined;
-  const tone = getCategoryTone(item.category);
+  const tone = getDetailsTone();
 
   return (
     <Link href={`/details/${item.id}`} className="group">

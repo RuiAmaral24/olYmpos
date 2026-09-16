@@ -2,7 +2,7 @@ import { Play, Plus, Star, TrendingUp } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { getCategoryTone } from "@/lib/category-tones";
+import { getDetailsTone } from "@/lib/details-tone";
 import { getProgressPercent, getStatusLabel, getTrackingDetails } from "@/lib/library";
 import { markLibraryItemCompleted } from "@/lib/supabase/actions";
 import { cn } from "@/lib/utils";
@@ -10,13 +10,14 @@ import type { DetailedLibraryItem } from "@/types";
 
 type DetailsTrackingCardProps = {
   item: DetailedLibraryItem;
+  persistChanges: boolean;
 };
 
-export function DetailsTrackingCard({ item }: DetailsTrackingCardProps) {
+export function DetailsTrackingCard({ item, persistChanges }: DetailsTrackingCardProps) {
   const progressPercent = getProgressPercent(item);
   const completedAction = markLibraryItemCompleted.bind(null, item.id);
   const trackingDetails = getTrackingDetails(item) || "Not started";
-  const tone = getCategoryTone(item.category);
+  const tone = getDetailsTone();
 
   return (
     <Card className={cn("space-y-6 rounded-2xl p-8", tone.panel)}>
@@ -66,16 +67,28 @@ export function DetailsTrackingCard({ item }: DetailsTrackingCardProps) {
         </div>
       </div>
 
-      <form action={completedAction}>
+      {persistChanges ? (
+        <form action={completedAction}>
+          <Button
+            type="submit"
+            variant="secondary"
+            className={cn("h-12 w-full rounded-xl bg-transparent px-5 hover:bg-white/6", tone.borderStrong, tone.text)}
+            leftIcon={<Plus className="h-4 w-4" />}
+          >
+            Update Progress
+          </Button>
+        </form>
+      ) : (
         <Button
-          type="submit"
+          type="button"
           variant="secondary"
-          className={cn("h-12 w-full rounded-xl bg-transparent px-5 hover:bg-white/6", tone.borderStrong, tone.text)}
+          className={cn("h-12 w-full rounded-xl bg-transparent px-5 hover:bg-white/6 disabled:opacity-55", tone.borderStrong, tone.text)}
           leftIcon={<Plus className="h-4 w-4" />}
+          disabled
         >
           Update Progress
         </Button>
-      </form>
+      )}
     </Card>
   );
 }
