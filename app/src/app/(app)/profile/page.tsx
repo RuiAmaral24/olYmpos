@@ -134,7 +134,7 @@ export default async function ProfilePage() {
   const favoriteItems = buildFavoriteItems(libraryItems);
   const recentReviews = buildRecentReviews(libraryItems);
   const recentlyTracked = buildRecentlyTracked(libraryItems);
-  const displayName = profile?.username || "John Doe";
+  const displayName = profile?.displayName || profile?.username || "John Doe";
   const bio =
     profile?.bio ??
     "Entertainment enthusiast tracking anime, movies, and games. Building my ultimate watchlist in the olYmpos universe.";

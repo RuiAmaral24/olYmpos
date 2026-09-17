@@ -1,5 +1,9 @@
+import { cache } from "react";
+
 import { mapLibraryItemRow, type LibraryItemRow } from "@/lib/library-mapper";
+import { getCurrentUser } from "@/lib/supabase/auth";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
+import type { UserProfile } from "@/types";
 
 const itemSelect = "*, reviews(*)";
 
@@ -34,11 +38,9 @@ export async function getUserLibraryItem(id: string) {
   };
 }
 
-export async function getUserProfile() {
+export const getUserProfile = cache(async (): Promise<UserProfile | null> => {
   const supabase = await createServerSupabaseClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getCurrentUser();
 
   if (!user) {
     return null;
@@ -52,16 +54,16 @@ export async function getUserProfile() {
 
   return {
     id: user.id,
-    email: user.email,
+    email: user.email ?? null,
     username:
-      data?.full_name ??
       data?.username ??
       user.user_metadata?.username ??
       user.email?.split("@")[0] ??
-      "olYmpos user",
-    bio:
-      data?.bio ??
-      "Building a personal olYmpos across anime, movies, and games.",
+      "olympos-user",
+    displayName: data?.full_name ?? null,
+    bio: data?.bio ?? null,
     avatarUrl: data?.avatar_url ?? null,
+    createdAt: data?.created_at ?? user.created_at,
+    profileVisibility: data?.profile_visibility === "private" ? "private" : "public",
   };
-}
+});

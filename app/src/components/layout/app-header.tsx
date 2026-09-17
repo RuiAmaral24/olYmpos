@@ -1,17 +1,20 @@
 "use client";
 
-import type { ReactNode } from "react";
-
-import type { User } from "@supabase/supabase-js";
-import { Bell, LogOut, Search, Settings, Zap } from "lucide-react";
+import { LogOut, Search, Settings, Zap } from "lucide-react";
 import { Cinzel } from "next/font/google";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+import { NotificationBell } from "@/components/notifications/notification-bell";
 import { logout } from "@/lib/supabase/auth";
+import type { Notification, UserProfile } from "@/types";
 
 type AppHeaderProps = {
-  user: User;
+  notificationOverview: {
+    recent: Notification[];
+    unreadCount: number;
+  };
+  profile: UserProfile;
 };
 
 const cinzel = Cinzel({
@@ -19,13 +22,14 @@ const cinzel = Cinzel({
   weight: ["400", "500", "600"],
 });
 
-export function AppHeader({ user }: AppHeaderProps) {
+export function AppHeader({ notificationOverview, profile }: AppHeaderProps) {
   const pathname = usePathname();
   const pageMeta = getPageMeta(pathname);
   const displayName =
-    typeof user.user_metadata?.username === "string"
-      ? user.user_metadata.username
-      : user.email?.split("@")[0] ?? "olYmpos";
+    profile?.displayName?.trim() ||
+    profile?.username ||
+    profile.email?.split("@")[0] ||
+    "olYmpos";
   const initials = getInitials(displayName);
 
   return (
@@ -58,12 +62,18 @@ export function AppHeader({ user }: AppHeaderProps) {
 
         <div className="flex shrink-0 items-center gap-3">
           <div className="flex items-center gap-2">
-            <HeaderIcon aria-label="Notifications" hasDot>
-              <Bell className="h-5 w-5" />
-            </HeaderIcon>
-            <HeaderIcon aria-label="Settings">
+            <NotificationBell
+              key={`${notificationOverview.unreadCount}:${notificationOverview.recent[0]?.id ?? "empty"}`}
+              initialNotifications={notificationOverview.recent}
+              initialUnreadCount={notificationOverview.unreadCount}
+            />
+            <Link
+              href="/settings"
+              aria-label="Settings"
+              className="relative inline-flex h-[42px] w-[42px] items-center justify-center rounded-xl text-[#c8d2f0] transition hover:bg-white/[0.04] hover:text-white"
+            >
               <Settings className="h-5 w-5" />
-            </HeaderIcon>
+            </Link>
           </div>
 
           <Link
@@ -115,27 +125,6 @@ function getInitials(name: string) {
     .join("");
 }
 
-type HeaderIconProps = {
-  "aria-label": string;
-  children: ReactNode;
-  hasDot?: boolean;
-};
-
-function HeaderIcon({ children, hasDot = false, ...props }: HeaderIconProps) {
-  return (
-    <button
-      type="button"
-      className="relative inline-flex h-[42px] w-[42px] items-center justify-center rounded-xl text-[#c8d2f0] transition hover:bg-white/[0.04] hover:text-white"
-      {...props}
-    >
-      {children}
-      {hasDot ? (
-        <span className="absolute right-2.5 top-2.5 h-2 w-2 rounded-full bg-[#8b5cf6]" />
-      ) : null}
-    </button>
-  );
-}
-
 function getPageMeta(pathname: string) {
   if (pathname.startsWith("/library")) {
     return {
@@ -152,6 +141,18 @@ function getPageMeta(pathname: string) {
   if (pathname.startsWith("/details")) {
     return {
       searchPlaceholder: "Search related titles",
+    };
+  }
+
+  if (pathname.startsWith("/settings")) {
+    return {
+      searchPlaceholder: "Search your olYmpos",
+    };
+  }
+
+  if (pathname.startsWith("/notifications")) {
+    return {
+      searchPlaceholder: "Search your notifications",
     };
   }
 

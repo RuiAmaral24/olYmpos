@@ -2,7 +2,8 @@ import type { ReactNode } from "react";
 import { redirect } from "next/navigation";
 
 import { AppShell } from "@/components/layout/app-shell";
-import { getCurrentUser } from "@/lib/supabase/auth";
+import { getUserProfile } from "@/lib/supabase/library";
+import { getNotificationOverview } from "@/lib/supabase/notifications";
 
 type AuthenticatedLayoutProps = {
   children: ReactNode;
@@ -13,11 +14,18 @@ export const dynamic = "force-dynamic";
 export default async function AuthenticatedLayout({
   children,
 }: AuthenticatedLayoutProps) {
-  const user = await getCurrentUser();
+  const [profile, notificationOverview] = await Promise.all([
+    getUserProfile(),
+    getNotificationOverview(),
+  ]);
 
-  if (!user) {
+  if (!profile) {
     redirect("/login");
   }
 
-  return <AppShell user={user}>{children}</AppShell>;
+  return (
+    <AppShell notificationOverview={notificationOverview} profile={profile}>
+      {children}
+    </AppShell>
+  );
 }

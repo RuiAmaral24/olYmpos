@@ -10,13 +10,87 @@ export type TrackingStatus =
 
 export type UserProfile = {
   id: string;
+  email: string | null;
   username: string;
-  displayName: string;
+  displayName: string | null;
   bio: string | null;
   avatarUrl: string | null;
-  isPublic: boolean;
   createdAt: string;
-  updatedAt: string;
+  profileVisibility: ProfileVisibility;
+};
+
+export type ProfileVisibility = "public" | "private";
+
+export type FollowRelationship = "self" | "none" | "requested" | "following";
+
+export type PublicUserProfile = {
+  id: string;
+  username: string;
+  displayName: string | null;
+  bio: string | null;
+  avatarUrl: string | null;
+  createdAt: string;
+  profileVisibility: ProfileVisibility;
+  relationship: FollowRelationship;
+  canViewPrivateContent: boolean;
+  followersCount: number;
+  followingCount: number;
+};
+
+export type FollowStats = {
+  followers: number;
+  following: number;
+};
+
+export type SocialUser = PublicUserProfile & {
+  requestedAt?: string;
+};
+
+export type SocialUserPage = {
+  items: SocialUser[];
+  page: number;
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
+  canView: boolean;
+};
+
+export type FollowRequestUser = {
+  id: string;
+  username: string;
+  displayName: string | null;
+  avatarUrl: string | null;
+  profileVisibility: ProfileVisibility;
+  requestedAt: string;
+};
+
+export type NotificationRow = {
+  id: string;
+  user_id: string;
+  type: string;
+  actor_user_id: string | null;
+  title: string;
+  body: string | null;
+  target_url: string | null;
+  related_entity_type: string | null;
+  related_entity_id: string | null;
+  payload: Record<string, unknown>;
+  dedupe_key: string | null;
+  read_at: string | null;
+  created_at: string;
+};
+
+export type Notification = {
+  id: string;
+  type: string;
+  actorUserId: string | null;
+  title: string;
+  body: string | null;
+  targetUrl: string | null;
+  relatedEntityType: string | null;
+  relatedEntityId: string | null;
+  payload: Record<string, unknown>;
+  readAt: string | null;
+  createdAt: string;
 };
 
 export type LibraryReview = {
