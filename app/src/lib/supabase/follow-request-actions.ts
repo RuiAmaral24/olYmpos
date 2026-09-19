@@ -6,17 +6,26 @@ import type { FollowRequestUser } from "@/types";
 
 export type RequestActionResult = { success: boolean; message?: string };
 
+type FollowRequestRow = {
+  id: string;
+  username: string;
+  full_name: string | null;
+  avatar_url: string | null;
+  profile_visibility: string;
+  requested_at: string;
+};
+
 export async function getFollowRequests(kind: "incoming" | "outgoing"): Promise<FollowRequestUser[]> {
   const supabase = await createServerSupabaseClient();
   const { data, error } = await supabase.rpc("get_follow_requests", { request_kind: kind });
   if (error) throw new Error(`Follow requests could not be loaded: ${error.message}`);
-  return (data ?? []).map((row) => ({
-    id: row.id as string,
-    username: row.username as string,
-    displayName: row.full_name as string | null,
-    avatarUrl: row.avatar_url as string | null,
+  return ((data ?? []) as FollowRequestRow[]).map((row) => ({
+    id: row.id,
+    username: row.username,
+    displayName: row.full_name,
+    avatarUrl: row.avatar_url,
     profileVisibility: row.profile_visibility === "private" ? "private" : "public",
-    requestedAt: row.requested_at as string,
+    requestedAt: row.requested_at,
   }));
 }
 

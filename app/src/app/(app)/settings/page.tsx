@@ -17,6 +17,7 @@ import {
 
 import {
   PasswordSettingsForm,
+  PrivacySettingsForm,
   ProfileSettingsForm,
 } from "@/components/settings/settings-forms";
 import { Badge } from "@/components/ui/badge";
@@ -166,6 +167,19 @@ export default async function SettingsPage() {
       </div>
 
       <section className="space-y-5">
+        <SectionHeading icon={<Eye className="h-6 w-6" />} title="Privacy" />
+        <Card className="rounded-2xl sm:rounded-2xl">
+          <div className="mb-6 space-y-1">
+            <h3 className="text-base font-semibold text-white">Profile visibility</h3>
+            <p className="text-sm leading-6 text-[#939bb1]">
+              Public profiles can be followed instantly. Private profiles require approval.
+            </p>
+          </div>
+          <PrivacySettingsForm profileVisibility={profile.profileVisibility} />
+        </Card>
+      </section>
+
+      <section className="space-y-5">
         <SectionHeading icon={<KeyRound className="h-6 w-6" />} title="Security" />
         <Card className="rounded-2xl sm:rounded-2xl">
           <div className="w-full">
@@ -190,9 +204,9 @@ export default async function SettingsPage() {
               description="Choose which activity and release updates you want to receive."
             />
             <PreferenceRow
-              icon={<Eye className="h-5 w-5" />}
-              title="Privacy"
-              description="Control how your profile and activity are shown to others."
+              icon={<Sparkles className="h-5 w-5" />}
+              title="Discovery"
+              description="Fine-tune how recommendations and profile discovery work."
             />
             <PreferenceRow
               icon={<Palette className="h-5 w-5" />}

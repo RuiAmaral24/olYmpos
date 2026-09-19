@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState, useEffect, useRef, type ReactNode } from "react";
-import { KeyRound, Loader2, Save } from "lucide-react";
+import { KeyRound, Loader2, LockKeyhole, Save, Unlock } from "lucide-react";
 import { useFormStatus } from "react-dom";
 
 import { Button } from "@/components/ui/button";
@@ -10,8 +10,11 @@ import { StatusMessage } from "@/components/ui/status-message";
 import {
   updatePassword,
   updateProfile,
+  updateProfileVisibility,
   type SettingsActionState,
 } from "@/lib/supabase/settings-actions";
+import { cn } from "@/lib/utils";
+import type { ProfileVisibility } from "@/types";
 
 const initialSettingsActionState: SettingsActionState = {
   status: "idle",
@@ -135,6 +138,87 @@ export function PasswordSettingsForm() {
         icon={<KeyRound className="h-4 w-4" />}
       />
     </form>
+  );
+}
+
+export function PrivacySettingsForm({
+  profileVisibility,
+}: {
+  profileVisibility: ProfileVisibility;
+}) {
+  const [state, formAction] = useActionState(
+    updateProfileVisibility,
+    initialSettingsActionState,
+  );
+
+  return (
+    <form action={formAction} className="space-y-5">
+      <fieldset className="grid gap-3 sm:grid-cols-2">
+        <legend className="sr-only">Profile visibility</legend>
+        <VisibilityOption
+          defaultChecked={profileVisibility === "public"}
+          description="Anyone can view your bio, followers, and following."
+          icon={<Unlock className="h-5 w-5" />}
+          label="Public"
+          value="public"
+        />
+        <VisibilityOption
+          defaultChecked={profileVisibility === "private"}
+          description="Only approved followers can view private profile details."
+          icon={<LockKeyhole className="h-5 w-5" />}
+          label="Private"
+          value="private"
+        />
+      </fieldset>
+
+      <ActionFeedback state={state} />
+
+      <SubmitButton
+        idleLabel="Update Privacy"
+        pendingLabel="Updating Privacy"
+        icon={<LockKeyhole className="h-4 w-4" />}
+      />
+    </form>
+  );
+}
+
+function VisibilityOption({
+  defaultChecked,
+  description,
+  icon,
+  label,
+  value,
+}: {
+  defaultChecked: boolean;
+  description: string;
+  icon: ReactNode;
+  label: string;
+  value: ProfileVisibility;
+}) {
+  return (
+    <label
+      className={cn(
+        "group flex cursor-pointer gap-4 rounded-2xl border border-white/10 bg-white/[0.035] p-4 transition",
+        "hover:border-[#8b5cf6]/40 hover:bg-[#8b5cf6]/8 has-[:checked]:border-[#8b5cf6]/55 has-[:checked]:bg-[#8b5cf6]/12",
+      )}
+    >
+      <input
+        type="radio"
+        name="profileVisibility"
+        value={value}
+        defaultChecked={defaultChecked}
+        className="sr-only"
+      />
+      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#8b5cf6]/12 text-[#a78bfa]">
+        {icon}
+      </span>
+      <span className="min-w-0">
+        <span className="block font-semibold text-white">{label}</span>
+        <span className="mt-1 block text-sm leading-6 text-[#939bb1]">
+          {description}
+        </span>
+      </span>
+    </label>
   );
 }
 

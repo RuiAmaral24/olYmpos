@@ -25,7 +25,7 @@ import {
   saveLibraryItem,
   toggleLibraryItemFavorite,
 } from "@/lib/supabase/actions";
-import type { EntryFormValues, EntryModalMode, LibraryItem } from "@/types";
+import type { EntryFormValues, EntryModalMode, LibraryItem, PublicReviewState } from "@/types";
 
 type LibraryManagerProps = {
   initialItems: LibraryItem[];
@@ -257,6 +257,13 @@ export function LibraryManager({ initialItems }: LibraryManagerProps) {
     });
   };
 
+  const handlePublicReviewChange = (publicReview: PublicReviewState) => {
+    if (!selectedItem) return;
+    const updatedItem = { ...selectedItem, publicReview };
+    setSelectedItem(updatedItem);
+    setItems((current) => current.map((item) => item.id === updatedItem.id ? updatedItem : item));
+  };
+
   return (
     <div className="space-y-8 pb-10">
       <section className="space-y-3 pt-4 sm:pt-6">
@@ -385,6 +392,7 @@ export function LibraryManager({ initialItems }: LibraryManagerProps) {
         onSave={handleSave}
         onDelete={modalMode === "edit" ? handleDelete : undefined}
         saving={isPending}
+        onPublicReviewChange={handlePublicReviewChange}
       />
     </div>
   );

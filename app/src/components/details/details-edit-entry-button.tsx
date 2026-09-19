@@ -93,6 +93,7 @@ export function DetailsEditEntryButton({
         onClose={() => setOpen(false)}
         onSave={handleSave}
         saving={isPending}
+        allowPublication={persistChanges}
       />
     </>
   );

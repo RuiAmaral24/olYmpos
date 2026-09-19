@@ -5,7 +5,7 @@ import { getCurrentUser } from "@/lib/supabase/auth";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import type { UserProfile } from "@/types";
 
-const itemSelect = "*, reviews(*)";
+const itemSelect = "*, reviews(*), public_reviews(id, content, published_at, updated_at)";
 
 export async function getUserLibraryItems() {
   const supabase = await createServerSupabaseClient();

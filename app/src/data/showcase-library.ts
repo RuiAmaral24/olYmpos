@@ -48,6 +48,7 @@ function baseItem<TItem extends ShowcaseBase>(item: TItem) {
     createdAt,
     updatedAt,
     review: review(item.id, item.rating, item.userReview),
+    publicReview: null,
     isShowcase: true as const,
   };
 }

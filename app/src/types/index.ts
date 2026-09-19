@@ -106,6 +106,46 @@ export type LibraryReview = {
   updatedAt: string;
 };
 
+export type PublicReviewState = {
+  id: string;
+  content: string;
+  publishedAt: string | null;
+  updatedAt: string;
+};
+
+export type ReviewAuthor = {
+  id: string;
+  username: string;
+  displayName: string | null;
+  avatarUrl: string | null;
+  profileVisibility?: ProfileVisibility;
+};
+
+export type PublicReview = {
+  id: string;
+  content: string;
+  rating: number | null;
+  mediaTitle: string;
+  mediaCategory: MediaCategory;
+  mediaCoverUrl: string | null;
+  mediaYear: number | null;
+  publishedAt: string | null;
+  createdAt: string;
+  updatedAt: string;
+  author: ReviewAuthor;
+  isOwner: boolean;
+};
+
+export type ReviewReply = {
+  id: string;
+  reviewId: string;
+  content: string;
+  createdAt: string;
+  updatedAt: string;
+  author: ReviewAuthor;
+  isOwner: boolean;
+};
+
 export type AnimeMetadata = {
   totalSeasons: number;
   totalEpisodes: number;
@@ -172,6 +212,7 @@ export type LibraryItemBase = {
   createdAt: string;
   updatedAt: string;
   review: LibraryReview | null;
+  publicReview: PublicReviewState | null;
 };
 
 export type AnimeLibraryItem = LibraryItemBase & {

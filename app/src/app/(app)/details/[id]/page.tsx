@@ -74,6 +74,9 @@ function DetailsPageContent({
           <DetailsReviewCard
             review={item.userReview}
             reviewedAt={item.review?.publishedAt ?? item.review?.updatedAt ?? item.updatedAt}
+            libraryItemId={persistChanges ? item.id : undefined}
+            publicReview={item.publicReview}
+            allowPublication={persistChanges}
           />
 
           <section className="space-y-5">

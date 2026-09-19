@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import Link from "next/link";
 
 import {
   Award,
@@ -7,6 +8,7 @@ import {
   Film,
   Gamepad2,
   Globe,
+  LockKeyhole,
   Sparkles,
   Star,
   TrendingUp,
@@ -21,7 +23,7 @@ import {
 } from "@/lib/library-mapper";
 import { getUserLibraryItems, getUserProfile } from "@/lib/supabase/library";
 import { cn } from "@/lib/utils";
-import type { DashboardReview, LibraryItem, MediaCategory } from "@/types";
+import type { DashboardReview, LibraryItem, MediaCategory, ProfileVisibility } from "@/types";
 
 type FavoriteDisplayItem = {
   id: string;
@@ -147,6 +149,7 @@ export default async function ProfilePage() {
         displayName={displayName}
         bio={bio}
         interests={buildInterests(trackedCounts)}
+        profileVisibility={profile?.profileVisibility ?? "public"}
       />
 
       <section className="grid gap-6 md:grid-cols-3">
@@ -264,11 +267,15 @@ function ProfileIdentity({
   displayName,
   bio,
   interests,
+  profileVisibility,
 }: {
   displayName: string;
   bio: string;
   interests: string[];
+  profileVisibility: ProfileVisibility;
 }) {
+  const isPrivate = profileVisibility === "private";
+
   return (
     <section className="rounded-2xl border border-[#2d2454] bg-[linear-gradient(135deg,rgba(17,18,34,0.92),rgba(12,13,25,0.98))] p-6 shadow-[0_24px_80px_rgba(3,7,18,0.28)] sm:p-8 lg:p-10">
       <div className="flex flex-col gap-7 lg:flex-row lg:items-start lg:justify-between">
@@ -288,8 +295,8 @@ function ProfileIdentity({
                 {displayName}
               </h2>
               <div className="flex items-center gap-2 text-sm font-semibold text-[#a78bfa]">
-                <Globe className="h-4 w-4" />
-                <span>Public Profile</span>
+                {isPrivate ? <LockKeyhole className="h-4 w-4" /> : <Globe className="h-4 w-4" />}
+                <span>{isPrivate ? "Private Profile" : "Public Profile"}</span>
               </div>
             </div>
 
@@ -310,13 +317,13 @@ function ProfileIdentity({
           </div>
         </div>
 
-        <button
-          type="button"
+        <Link
+          href="/settings"
           className="inline-flex h-11 shrink-0 items-center justify-center gap-2 rounded-xl bg-[linear-gradient(135deg,#9b6dff,#6366f1)] px-5 text-sm font-bold text-white shadow-[0_18px_46px_rgba(139,92,246,0.24)] transition hover:brightness-110"
         >
           <Edit className="h-4 w-4" />
           Edit Profile
-        </button>
+        </Link>
       </div>
     </section>
   );

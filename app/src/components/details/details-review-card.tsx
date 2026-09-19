@@ -1,21 +1,31 @@
 import { Card } from "@/components/ui/card";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Clock, MessageSquareText, Star } from "lucide-react";
+import { PublicReviewControls } from "@/components/reviews/public-review-controls";
+import type { PublicReviewState } from "@/types";
 
 type DetailsReviewCardProps = {
   review: string | null;
   reviewedAt: string;
+  libraryItemId?: string;
+  publicReview?: PublicReviewState | null;
+  allowPublication?: boolean;
 };
 
-export function DetailsReviewCard({ review, reviewedAt }: DetailsReviewCardProps) {
+export function DetailsReviewCard({ review, reviewedAt, libraryItemId, publicReview = null, allowPublication = false }: DetailsReviewCardProps) {
   if (!review) {
     return (
-      <EmptyState
-        eyebrow="No Review Yet"
-        title="No personal review has been saved"
-        description="Add notes from the library edit flow to keep this title's record current."
-        icon={<MessageSquareText className="h-5 w-5" />}
-      />
+      <div className="space-y-4">
+        <EmptyState
+          eyebrow="No Review Yet"
+          title="No personal review has been saved"
+          description="Add notes from the library edit flow to keep this title's record current."
+          icon={<MessageSquareText className="h-5 w-5" />}
+        />
+        {libraryItemId && allowPublication && publicReview ? (
+          <PublicReviewControls libraryItemId={libraryItemId} privateNote="" savedPrivateNote="" initialReview={publicReview} />
+        ) : null}
+      </div>
     );
   }
 
@@ -34,6 +44,9 @@ export function DetailsReviewCard({ review, reviewedAt }: DetailsReviewCardProps
         <Clock className="h-4 w-4" />
         <span>Reviewed on {formatDate(reviewedAt)}</span>
       </div>
+      {libraryItemId && allowPublication ? (
+        <PublicReviewControls libraryItemId={libraryItemId} privateNote={review} savedPrivateNote={review} initialReview={publicReview} />
+      ) : null}
     </Card>
   );
 }

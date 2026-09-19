@@ -13,6 +13,7 @@ import type {
   MovieMetadata,
   MovieProgress,
   TrackingStatus,
+  PublicReviewState,
 } from "@/types";
 
 export type LibraryItemRow = {
@@ -31,6 +32,7 @@ export type LibraryItemRow = {
   created_at: string;
   updated_at: string;
   reviews?: ReviewRow[] | null;
+  public_reviews?: PublicReviewStateRow[] | null;
 };
 
 export type ReviewRow = {
@@ -39,6 +41,13 @@ export type ReviewRow = {
   library_item_id: string;
   content: string;
   created_at: string;
+  updated_at: string;
+};
+
+type PublicReviewStateRow = {
+  id: string;
+  content: string;
+  published_at: string | null;
   updated_at: string;
 };
 
@@ -77,6 +86,7 @@ export function mapLibraryItemRow(row: LibraryItemRow): LibraryItem {
   const category = parseCategory(row.category);
   const status = parseStatus(row.status);
   const review = mapReview(row.reviews?.[0] ?? null, row.rating ?? 0);
+  const publicReview = mapPublicReviewState(row.public_reviews?.[0] ?? null);
   const base = {
     id: row.id,
     userId: row.user_id,
@@ -92,6 +102,7 @@ export function mapLibraryItemRow(row: LibraryItemRow): LibraryItem {
     createdAt: row.created_at,
     updatedAt: row.updated_at,
     review,
+    publicReview,
   };
 
   if (category === "anime") {
@@ -169,6 +180,19 @@ export function mapLibraryItemRow(row: LibraryItemRow): LibraryItem {
       releaseDate: stringValue(metadata.releaseDate, String(base.year)),
     },
     progress: gameProgress,
+  };
+}
+
+function mapPublicReviewState(row: PublicReviewStateRow | null): PublicReviewState | null {
+  if (!row) {
+    return null;
+  }
+
+  return {
+    id: row.id,
+    content: row.content,
+    publishedAt: row.published_at,
+    updatedAt: row.updated_at,
   };
 }
 

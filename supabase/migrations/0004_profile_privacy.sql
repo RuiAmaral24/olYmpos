@@ -10,7 +10,12 @@ alter table public.profiles
   add constraint profiles_profile_visibility_check
   check (profile_visibility in ('public', 'private'));
 
-create or replace view public.public_profiles
+-- The 0003 view includes bio. PostgreSQL cannot remove or reorder existing
+-- view columns with CREATE OR REPLACE VIEW, so replace the view structurally.
+-- RESTRICT is the default and intentionally prevents dropping unknown dependents.
+drop view if exists public.public_profiles;
+
+create view public.public_profiles
 with (security_barrier = true, security_invoker = false)
 as
 select id, username, full_name, avatar_url, created_at, profile_visibility
@@ -38,6 +43,9 @@ grant select, delete on public.follow_requests to authenticated;
 drop policy if exists "Authenticated users can view follows" on public.follows;
 drop policy if exists "Users can create their own follows" on public.follows;
 drop policy if exists "Users can delete their own follows" on public.follows;
+drop policy if exists "Users can view participating follows" on public.follows;
+drop policy if exists "Users can view participating requests" on public.follow_requests;
+drop policy if exists "Requesters can cancel requests" on public.follow_requests;
 
 revoke insert, update on public.follows from authenticated;
 grant select, delete on public.follows to authenticated;

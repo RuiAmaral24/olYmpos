@@ -18,10 +18,11 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { StatusMessage } from "@/components/ui/status-message";
+import { PublicReviewControls } from "@/components/reviews/public-review-controls";
 import { getCategoryLabel, getStatusLabel } from "@/lib/library";
 import { getDashboardArtwork } from "@/lib/library-mapper";
 import { cn } from "@/lib/utils";
-import type { EntryFormValues, EntryModalMode, MediaCategory, TrackingStatus } from "@/types";
+import type { EntryFormValues, EntryModalMode, MediaCategory, PublicReviewState, TrackingStatus } from "@/types";
 
 const categoryOptions: { value: MediaCategory; icon: typeof Tv }[] = [
   { value: "anime", icon: Tv },
@@ -54,6 +55,11 @@ type EntryFormProps = {
   onDelete?: () => void;
   saving?: boolean;
   error?: string | null;
+  libraryItemId?: string;
+  savedPrivateNote?: string;
+  publicReview?: PublicReviewState | null;
+  allowPublication?: boolean;
+  onPublicReviewChange?: (review: PublicReviewState) => void;
 };
 
 export function EntryForm({
@@ -66,6 +72,11 @@ export function EntryForm({
   onDelete,
   saving = false,
   error,
+  libraryItemId,
+  savedPrivateNote = "",
+  publicReview = null,
+  allowPublication = false,
+  onPublicReviewChange,
 }: EntryFormProps) {
   const noteCount = values.notes.length;
   const artworkUrl = coverUrl ?? getDashboardArtwork(values.category);
@@ -288,6 +299,17 @@ export function EntryForm({
           placeholder="Capture your latest thoughts about this title."
           className="w-full resize-none rounded-xl border border-[#2c224a] bg-[#111122] px-4 py-4 text-sm font-semibold leading-7 text-[#f1f0fb] outline-none placeholder:text-[#8389a3] shadow-[inset_0_1px_0_rgba(255,255,255,0.03)] focus:border-[#8b5cf6]/65 focus:ring-2 focus:ring-[#8b5cf6]/24"
         />
+
+        {libraryItemId && allowPublication ? (
+          <PublicReviewControls
+            libraryItemId={libraryItemId}
+            privateNote={values.notes}
+            savedPrivateNote={savedPrivateNote}
+            initialReview={publicReview}
+            disabled={saving}
+            onReviewChange={onPublicReviewChange}
+          />
+        ) : null}
       </section>
 
       <section className="border-t border-[#33275a] pt-6">

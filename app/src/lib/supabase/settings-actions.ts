@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 
 import { createServerSupabaseClient } from "@/lib/supabase/server";
+import type { ProfileVisibility } from "@/types";
 
 export type SettingsActionState = {
   status: "idle" | "success" | "error";
@@ -125,6 +126,48 @@ export async function updatePassword(
   return {
     status: "success",
     message: "Password updated.",
+  };
+}
+
+export async function updateProfileVisibility(
+  _previousState: SettingsActionState,
+  formData: FormData,
+): Promise<SettingsActionState> {
+  const visibility = String(formData.get("profileVisibility") ?? "");
+
+  if (visibility !== "public" && visibility !== "private") {
+    return errorResult("Choose Public or Private visibility.");
+  }
+
+  const supabase = await createServerSupabaseClient();
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser();
+
+  if (authError || !user) {
+    return errorResult("Your session has expired. Sign in again to update privacy.");
+  }
+
+  const { data, error } = await supabase.rpc("set_profile_visibility", {
+    new_visibility: visibility satisfies ProfileVisibility,
+  });
+
+  if (error) {
+    return errorResult(error.message || "Profile visibility could not be updated.");
+  }
+
+  revalidatePath("/", "layout");
+  revalidatePath("/profile");
+  revalidatePath("/settings");
+  revalidatePath("/requests");
+  revalidatePath("/notifications");
+
+  return {
+    status: "success",
+    message: data === "public"
+      ? "Profile is public. Pending follow requests were approved."
+      : "Profile is private. New followers will need approval.",
   };
 }
 

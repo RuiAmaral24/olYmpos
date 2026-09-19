@@ -11,7 +11,7 @@ import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { getUserLibraryItem } from "@/lib/supabase/library";
 import type { EntryFormValues } from "@/types";
 
-const itemSelect = "*, reviews(*)";
+const itemSelect = "*, reviews(*), public_reviews(id, content, published_at, updated_at)";
 
 export async function saveLibraryItem(values: EntryFormValues, itemId?: string) {
   const supabase = await createServerSupabaseClient();

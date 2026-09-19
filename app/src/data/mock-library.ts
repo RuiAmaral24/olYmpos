@@ -29,6 +29,7 @@ function baseItem(
     createdAt,
     updatedAt,
     review: null,
+    publicReview: null,
   };
 }
 

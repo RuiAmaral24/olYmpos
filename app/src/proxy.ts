@@ -10,6 +10,7 @@ const protectedRoutes = [
   "/notifications",
   "/requests",
   "/users",
+  "/reviews",
 ];
 const authRoutes = ["/login", "/signup"];
 

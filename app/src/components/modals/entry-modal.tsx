@@ -5,7 +5,7 @@ import { useState } from "react";
 import { EntryForm } from "@/components/modals/entry-form";
 import { ModalShell } from "@/components/modals/modal-shell";
 import { itemToEntryFormValues } from "@/lib/library-mapper";
-import type { EntryFormValues, EntryModalMode, LibraryItem } from "@/types";
+import type { EntryFormValues, EntryModalMode, LibraryItem, PublicReviewState } from "@/types";
 
 type EntryModalProps = {
   open: boolean;
@@ -15,6 +15,8 @@ type EntryModalProps = {
   onSave: (values: EntryFormValues) => void;
   onDelete?: () => void;
   saving?: boolean;
+  allowPublication?: boolean;
+  onPublicReviewChange?: (review: PublicReviewState) => void;
 };
 
 const defaultValues: EntryFormValues = {
@@ -40,6 +42,8 @@ export function EntryModal({
   onSave,
   onDelete,
   saving = false,
+  allowPublication = true,
+  onPublicReviewChange,
 }: EntryModalProps) {
   const formKey = `${mode}-${item?.id ?? "new"}`;
 
@@ -57,6 +61,8 @@ export function EntryModal({
         onSave={onSave}
         onDelete={onDelete}
         saving={saving}
+        allowPublication={allowPublication}
+        onPublicReviewChange={onPublicReviewChange}
       />
     </ModalShell>
   );
@@ -70,6 +76,8 @@ type EntryModalContentProps = {
   onSave: (values: EntryFormValues) => void;
   onDelete?: () => void;
   saving: boolean;
+  allowPublication: boolean;
+  onPublicReviewChange?: (review: PublicReviewState) => void;
 };
 
 function EntryModalContent({
@@ -80,6 +88,8 @@ function EntryModalContent({
   onSave,
   onDelete,
   saving,
+  allowPublication,
+  onPublicReviewChange,
 }: EntryModalContentProps) {
   const [values, setValues] = useState<EntryFormValues>(initialValues);
   const [validationError, setValidationError] = useState<string | null>(null);
@@ -122,6 +132,11 @@ function EntryModalContent({
       onDelete={onDelete}
       saving={saving}
       error={validationError}
+      libraryItemId={item?.id}
+      savedPrivateNote={item?.review?.body ?? ""}
+      publicReview={item?.publicReview ?? null}
+      allowPublication={allowPublication}
+      onPublicReviewChange={onPublicReviewChange}
     />
   );
 }
